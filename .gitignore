@@ -1,3 +1,4 @@
 .DS_Store
 catalog.pdf
 prompts.xlsx
+.env
