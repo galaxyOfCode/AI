@@ -1,4 +1,4 @@
-# Version 3.2 - Nov 2023 - J. Hall
+# Version 3.3 - Nov 2023 - J. Hall
 # Your openai key should be stored in a file called ".env"
 # that is in the same folder as this application.  The content
 # of .env needs to be one line that is OPENAI_API_KEY=your key value
@@ -429,7 +429,7 @@ def asst():
 
 def PrintMenu():
     print("\n")
-    print("openAI v3.2 (J. Hall, 2023)")
+    print("openAI v3.3 (J. Hall, 2023)")
     print("---------------------------")
     print(" 1 = 3.5 Instruct")
     print(" 2 = 3.5 Chat")
@@ -501,4 +501,5 @@ while True:
 #                            includes gpt-4-vision
 # Version 3.1   11/09/23     Added 'Print Current Settings' option
 # Version 3.2   11/12/23     Added the SIU Assistant option
+# Version 3.3   11/20/23     Removed Prompt Perfect option
 #
