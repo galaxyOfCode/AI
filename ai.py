@@ -1,4 +1,4 @@
-# Version 3.3 - Nov 2023 - J. Hall
+# Version 3.4 - Nov 2023 - J. Hall
 # Your openai key should be stored in a file called ".env"
 # that is in the same folder as this application.  The content
 # of .env needs to be one line that is OPENAI_API_KEY=your key value
@@ -10,12 +10,11 @@ from dotenv import dotenv_values
 from pathlib import Path
 import base64
 
-STOP = 14
+STOP = 13
 MAX_TOKENS = 500
 GPT3_MODEL = "gpt-3.5-turbo-1106"
 GPT4_MODEL = "gpt-4-1106-preview"
 IMG_MODEL = "dall-e-3"
-INSTRUCT_MODEL = "gpt-3.5-turbo-instruct-0914"
 VISION_MODEL = "gpt-4-vision-preview"
 PP_MODEL = "dalle"
 WHISPER_MODEL = "whisper-1"
@@ -55,35 +54,8 @@ def red(text):
     red_end = "\033[0m"
     return red_start + text + red_end
 
-# Option 1 - ChatGPT 3.5 Instruct
 
-
-def instruct():
-    prompt = ""
-    while True:
-        try:
-            user_input = input(bold(blue("You: ")))
-            prompt += user_input + "\n"
-            res = client.completions.create(
-                model=INSTRUCT_MODEL,
-                prompt=prompt,
-                max_tokens=MAX_TOKENS,
-                temperature=TUTOR_TEMP,
-                stop="",
-                top_p=TOP_P,
-                presence_penalty=PRES_PENALTY,
-                frequency_penalty=FREQ_PENALTY,
-            )
-            choices_list = res.choices
-            first_choice = choices_list[0]
-            content = first_choice.text
-            print(bold(red("Assistant: ")), content)
-
-        except KeyboardInterrupt:
-            print("Exiting...")
-            break
-
-# Option 2 - ChatGPT 3.5
+# Option 1 - ChatGPT 3.5
 
 
 def chat3():
@@ -112,7 +84,7 @@ def chat3():
             print("Exiting...")
             break
 
-# Option 3 - ChatGPT 4.0
+# Option 2 - ChatGPT 4.0
 
 
 def chat4():
@@ -142,7 +114,7 @@ def chat4():
             print("Exiting...")
             break
 
-# Option 4 - Tutor 3.5
+# Option 3 - Tutor 3.5
 
 
 def tutor_3():
@@ -174,7 +146,7 @@ def tutor_3():
             print("Exiting...")
             break
 
-# Option 5 - Tutor 4
+# Option 4 - Tutor 4
 
 
 def tutor_4():
@@ -207,7 +179,7 @@ def tutor_4():
             break
 
 
-# Option 6 - Image Generator
+# Option 5 - Image Generator
 
 
 def image():
@@ -244,7 +216,7 @@ def image():
     print(bold(red("Assistant: ")), image_url)
 
 
-# Option 7 - Vision
+# Option 6 - Vision
 
 # Function to encode the image
 def encode_image(image_path):
@@ -288,7 +260,7 @@ def vision():
     assistant_content = data['choices'][0]['message']['content']
     print(bold(red("Assistant: ")), assistant_content)
 
-# Option 8 - Whisper (Speech to Text)
+# Option 7 - Whisper (Speech to Text)
 
 
 def whisper():
@@ -297,7 +269,7 @@ def whisper():
     transcript = client.audio.transcriptions.create(WHISPER_MODEL, audio_file)
     print(bold(red("Assistant: ")), transcript["text"])
 
-# Option 9 - TTS (Text to Speech)
+# Option 8 - TTS (Text to Speech)
 
 
 def tts():
@@ -311,7 +283,7 @@ def tts():
     response.stream_to_file(speech_file_path)
     print(bold(red("Assistant: ")), "Check your Desktop for 'speech.mp3'")
 
-# Option 10 - List GPT/whisper models
+# Option 9 - List GPT/whisper models
 
 
 def list_gpt_models():
@@ -327,7 +299,7 @@ def list_gpt_models():
         print(id)
     input("\nHit Enter to continue . . .")
 
-# Option 11 - List all models
+# Option 10 - List all models
 
 
 def list_models():
@@ -341,7 +313,7 @@ def list_models():
         print(id)
     input("\nHit Enter to continue . . .")
 
-# Option 12 - List Current Settings
+# Option 11 - List Current Settings
 
 
 def settings():
@@ -349,7 +321,6 @@ def settings():
     print("-----------------------------------------")
     print("GPT3_MODEL: " + GPT3_MODEL)
     print("GPT4_MODEL: " + GPT4_MODEL)
-    print("INSTRUCT_MODEL: " + INSTRUCT_MODEL)
     print("IMG_MODEL: " + IMG_MODEL)
     print("SIZE: " + SIZE)
     print("VISION_MODEL: " + VISION_MODEL)
@@ -366,7 +337,7 @@ def settings():
 
     input("\nHit Enter to continue . . .")
 
-# Option 13 - Assistant
+# Option 12 - Assistant
 
 
 def asst():
@@ -429,22 +400,21 @@ def asst():
 
 def PrintMenu():
     print("\n")
-    print("openAI v3.3 (J. Hall, 2023)")
+    print("openAI v3.4 (J. Hall, 2023)")
     print("---------------------------")
-    print(" 1 = 3.5 Instruct")
-    print(" 2 = 3.5 Chat")
-    print(" 3 = 4.0 Chat")
-    print(" 4 = 3.5 Tutor")
-    print(" 5 = 4.0 Tutor")
-    print(" 6 = Image Generator")
-    print(" 7 = Vision")
-    print(" 8 = Speech-to-Text")
-    print(" 9 = Text-to-Speech")
-    print("10 = List GPT Models")
-    print("11 = List All Models")
-    print("12 = List Current Settings")
-    print("13 = SIU Assistant")
-    print("14 = Quit")
+    print(" 1 = 3.5 Chat")
+    print(" 2 = 4.0 Chat")
+    print(" 3 = 3.5 Tutor")
+    print(" 4 = 4.0 Tutor")
+    print(" 5 = Image Generator")
+    print(" 6 = Vision")
+    print(" 7 = Speech-to-Text")
+    print(" 8 = Text-to-Speech")
+    print(" 9 = List GPT Models")
+    print("10 = List All Models")
+    print("11 = List Current Settings")
+    print("11 = SIU Assistant")
+    print("13 = Quit")
 
 
 # Main Loop
@@ -456,32 +426,30 @@ while True:
         NotNumeric()
         continue
     if choice == 1:
-        instruct()
-    elif choice == 2:
         chat3()
-    elif choice == 3:
+    elif choice == 2:
         chat4()
-    elif choice == 4:
+    elif choice == 3:
         tutor_3()
-    elif choice == 5:
+    elif choice == 4:
         tutor_4()
-    elif choice == 6:
+    elif choice == 5:
         image()
-    elif choice == 7:
+    elif choice == 6:
         vision()
-    elif choice == 8:
+    elif choice == 7:
         whisper()
-    elif choice == 9:
+    elif choice == 8:
         tts()
-    elif choice == 10:
+    elif choice == 9:
         list_gpt_models()
-    elif choice == 11:
+    elif choice == 10:
         list_models()
-    elif choice == 12:
+    elif choice == 11:
         settings()
-    elif choice == 13:
+    elif choice == 12:
         asst()
-    elif choice == 14:
+    elif choice == 13:
         quit()
     else:
         input("\nPlease Make a Choice Between 1 and {0:2d} \nPress <Enter> to return to Main Menu ... "
@@ -497,9 +465,9 @@ while True:
 # Version 1.8   08/25/23     Switched to generic tutor function.
 # Version 2.0   08/31/23     Added choice of 3.5 or 4 to the tutor function.
 # Version 2.1   10/03/23     Added instruct model and broke out model list option.
-# Version 3.0   11/07/23     Converted to the updated openai package 1.1.1 which
-#                            includes gpt-4-vision
+# Version 3.0   11/07/23     Converted to the updated openai package 1.1.1 which includes gpt-4-vision
 # Version 3.1   11/09/23     Added 'Print Current Settings' option
 # Version 3.2   11/12/23     Added the SIU Assistant option
 # Version 3.3   11/20/23     Removed Prompt Perfect option
+# Version 3.4   11/28/23     Removed gpt-3.5-instruct
 #
