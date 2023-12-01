@@ -1,17 +1,16 @@
-# Version 3.4 - Nov 2023 - J. Hall
-# Your openai key should be stored in a file called ".env"
-# that is in the same folder as this application.  The content
-# of .env needs to be one line that is OPENAI_API_KEY=your key value
+# Version 3.4.1 - Nov 2023 - J. Hall
+# Your openai key should be stored in your .bashrc or .zshrc file
+# It should contain: export OPENAI_API_KEY="your api key value"
 #
 
 from openai import OpenAI
 import requests
-from dotenv import dotenv_values
 from pathlib import Path
 import base64
+import os
 
 STOP = 13
-MAX_TOKENS = 500
+MAX_TOKENS = 5000
 GPT3_MODEL = "gpt-3.5-turbo-1106"
 GPT4_MODEL = "gpt-4-1106-preview"
 IMG_MODEL = "dall-e-3"
@@ -27,8 +26,7 @@ PRES_PENALTY = 0
 TOP_P = .95
 SIZE = "1024x1024"
 
-config = dotenv_values(".env")
-api_key = config["OPENAI_API_KEY"]
+api_key = os.environ.get('OPENAI_API_KEY')
 client = OpenAI()
 
 
@@ -59,7 +57,7 @@ def red(text):
 
 
 def chat3():
-    initial_prompt = f"You are a question answering expert. You have a wide range of knowledge and are a world class expert in all things.  When asked questions that require computations, take them one step at a time. If appropriate, give an example to help the user understand your answer."
+    initial_prompt = "You are a question answering expert. You have a wide range of knowledge and are a world class expert in all things.  When asked questions that require computations, take them one step at a time. If appropriate, give an example to help the user understand your answer."
     messages = [{"role": "system", "content": initial_prompt}]
 
     while True:
@@ -88,7 +86,7 @@ def chat3():
 
 
 def chat4():
-    initial_prompt = f"You are a question answering expert. You have a wide range of knowledge and are a world class expert in all things.  When asked questions that require computations, take them one step at a time. If appropriate, give an example to help the user understand your answer."
+    initial_prompt = "You are a question answering expert. You have a wide range of knowledge and are a world class expert in all things.  When asked questions that require computations, take them one step at a time. If appropriate, give an example to help the user understand your answer."
     messages = [{"role": "system", "content": initial_prompt}]
 
     while True:
@@ -119,8 +117,7 @@ def chat4():
 
 def tutor_3():
     initial_input = input(bold(blue("What kind of tutor?: ")))
-    initial_prompt = f"You are a world class expert in the field of " + initial_input + \
-        ". You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
+    initial_prompt = f"You are a world class expert in the field of {initial_input}.You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
     messages = [{"role": "system", "content": initial_prompt}]
 
     while True:
@@ -151,8 +148,7 @@ def tutor_3():
 
 def tutor_4():
     initial_input = input(bold(blue("What kind of tutor?: ")))
-    initial_prompt = f"You are a world class expert in the field of " + initial_input + \
-        ". You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
+    initial_prompt = f"You are a world class expert in the field of {initial_input}. You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
     messages = [{"role": "system", "content": initial_prompt}]
 
     while True:
@@ -400,8 +396,8 @@ def asst():
 
 def PrintMenu():
     print("\n")
-    print("openAI v3.4 (J. Hall, 2023)")
-    print("---------------------------")
+    print("openAI v3.4.1 (J. Hall, 2023)")
+    print("-----------------------------")
     print(" 1 = 3.5 Chat")
     print(" 2 = 4.0 Chat")
     print(" 3 = 3.5 Tutor")
@@ -413,7 +409,7 @@ def PrintMenu():
     print(" 9 = List GPT Models")
     print("10 = List All Models")
     print("11 = List Current Settings")
-    print("11 = SIU Assistant")
+    print("12 = SIU Assistant")
     print("13 = Quit")
 
 
@@ -470,4 +466,5 @@ while True:
 # Version 3.2   11/12/23     Added the SIU Assistant option
 # Version 3.3   11/20/23     Removed Prompt Perfect option
 # Version 3.4   11/28/23     Removed gpt-3.5-instruct
+# Version 3.4.1 11/30/23     Changed api-key to an OS variable
 #
