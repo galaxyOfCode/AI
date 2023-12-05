@@ -1,4 +1,4 @@
-# Version 3.4.1 - Nov 2023 - J. Hall
+# Version 3.4.2 - Dec 2023 - J. Hall
 # Your openai key should be stored in your .bashrc or .zshrc file
 # It should contain: export OPENAI_API_KEY="your api key value"
 #
@@ -10,7 +10,7 @@ import base64
 import os
 
 STOP = 13
-MAX_TOKENS = 5000
+MAX_TOKENS = 4000
 GPT3_MODEL = "gpt-3.5-turbo-1106"
 GPT4_MODEL = "gpt-4-1106-preview"
 IMG_MODEL = "dall-e-3"
@@ -216,13 +216,19 @@ def image():
 
 # Function to encode the image
 def encode_image(image_path):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode('utf-8')
+    try:
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode('utf-8')
+    except IOError as e:
+        print(e)
+        return ""
 
 
 def vision():
     image_path = input(bold(blue("Name of image file: ")))
     base64_image = encode_image(image_path)
+    if (base64_image == ""):
+        return
     text = input(bold(blue("You: ")))
     headers = {
         "Content-Type": "application/json",
@@ -253,17 +259,28 @@ def vision():
     response = requests.post(
         "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
     data = response.json()
-    assistant_content = data['choices'][0]['message']['content']
-    print(bold(red("Assistant: ")), assistant_content)
+    try:
+        assistant_content = data['choices'][0]['message']['content']
+        print(bold(red("Assistant: ")), assistant_content)
+    except:
+        error = data['error']['message']
+        print(bold(red("Assistant: ")), error)
+        return
 
 # Option 7 - Whisper (Speech to Text)
 
 
 def whisper():
     choice = input("What is the path/name of the audio file? ")
-    audio_file = open(choice, "rb")
-    transcript = client.audio.transcriptions.create(WHISPER_MODEL, audio_file)
-    print(bold(red("Assistant: ")), transcript["text"])
+    try:
+        audio_file = open(choice, "rb")
+        transcript = client.audio.transcriptions.create(
+            WHISPER_MODEL, audio_file)
+        print(bold(red("Assistant: ")), transcript["text"])
+    except IOError as e:
+        print(e)
+        return
+
 
 # Option 8 - TTS (Text to Speech)
 
@@ -277,7 +294,8 @@ def tts():
         input=choice
     )
     response.stream_to_file(speech_file_path)
-    print(bold(red("Assistant: ")), "Check your Desktop for 'speech.mp3'")
+    print(bold(red("Assistant: ")),
+          "'speech.mp3' succesfully created, Check your Desktop")
 
 # Option 9 - List GPT/whisper models
 
@@ -396,7 +414,7 @@ def asst():
 
 def PrintMenu():
     print("\n")
-    print("openAI v3.4.1 (J. Hall, 2023)")
+    print("openAI v3.4.2 (J. Hall, 2023)")
     print("-----------------------------")
     print(" 1 = 3.5 Chat")
     print(" 2 = 4.0 Chat")
@@ -448,8 +466,8 @@ while True:
     elif choice == 13:
         quit()
     else:
-        input("\nPlease Make a Choice Between 1 and {0:2d} \nPress <Enter> to return to Main Menu ... "
-              .format(STOP))
+        input(
+            f"\nPlease Make a Choice Between 1 and {STOP} \nPress <Enter> to return to Main Menu ... ")
 
 # Version 1.0   06/07/23     Initial release
 # Version 1.1   06/11/23     Added HTML/CSS and Linux options.
@@ -467,4 +485,4 @@ while True:
 # Version 3.3   11/20/23     Removed Prompt Perfect option
 # Version 3.4   11/28/23     Removed gpt-3.5-instruct
 # Version 3.4.1 11/30/23     Changed api-key to an OS variable
-#
+# Version 3.4.2 12/05/23     Added try/except blocks to handle errors

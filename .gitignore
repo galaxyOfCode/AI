@@ -2,3 +2,5 @@
 catalog.pdf
 prompts.xlsx
 .dist
+*.png
+*.txt
