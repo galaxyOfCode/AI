@@ -1,72 +1,64 @@
-# Version 3.4.2 - Dec 2023 - J. Hall
+# Dec 2023 - J. Hall
 # Your openai key should be stored in your .bashrc or .zshrc file
 # It should contain: export OPENAI_API_KEY="your api key value"
 #
 
-from openai import OpenAI
-import requests
-from pathlib import Path
-import base64
 import os
+import sys
+from termcolor import colored, cprint
+from pathlib import Path
+import tkinter as tk
+from tkinter import filedialog
+from openai import OpenAI
 
-STOP = 13
+STOP = 14
 MAX_TOKENS = 4000
 GPT3_MODEL = "gpt-3.5-turbo-1106"
 GPT4_MODEL = "gpt-4-1106-preview"
 IMG_MODEL = "dall-e-3"
 VISION_MODEL = "gpt-4-vision-preview"
-PP_MODEL = "dalle"
 WHISPER_MODEL = "whisper-1"
 TTS_MODEL = "tts-1-1106"
 TTS_VOICE = "alloy"
 TUTOR_TEMP = .2
 CHAT_TEMP = .8
-FREQ_PENALTY = 1
-PRES_PENALTY = 0
-TOP_P = .95
+FREQ_PENALTY = .4
 SIZE = "1024x1024"
 
-api_key = os.environ.get('OPENAI_API_KEY')
+try:
+    api_key = os.environ.get("OPENAI_API_KEY")
+except:
+    print("No API key found")
 client = OpenAI()
 
 
-def NotNumeric():
+def not_numeric():
+    """
+    Error message if choice is not numeric
+    """
     input("\nYou Entered a non-numeric value or wrong format.\nPress <Enter> to continue ... ")
     return
 
+blue1 = colored("You: ", "light_blue", attrs=["bold"])
+blue2 = colored("What kind of tutor: ", "light_blue", attrs=["bold"])
+blue3 = colored("Select a File: ", "light_blue", attrs=["bold"])
+blue4 = colored("Image Description: ", "light_blue", attrs=["bold"])
+blue5 = colored("Enter the text: ", "light_blue", attrs=["bold"])
+red = colored("Assistant: ", "light_red", attrs=["bold"])
 
-def bold(text):
-    bold_start = "\033[1m"
-    bold_end = "\033[0m"
-    return bold_start + text + bold_end
-
-
-def blue(text):
-    blue_start = "\033[34m"
-    blue_end = "\033[0m"
-    return blue_start + text + blue_end
-
-
-def red(text):
-    red_start = "\033[31m"
-    red_end = "\033[0m"
-    return red_start + text + red_end
-
-
-# Option 1 - ChatGPT 3.5
-
-
-def chat3():
+def chat(model):
+    """ 
+    This is a chatbot for any general subject.  Depending on the calling function it will have a different model but usually the temperature is higher (for a little more creativity).  
+    """
     initial_prompt = "You are a question answering expert. You have a wide range of knowledge and are a world class expert in all things.  When asked questions that require computations, take them one step at a time. If appropriate, give an example to help the user understand your answer."
     messages = [{"role": "system", "content": initial_prompt}]
-
     while True:
         try:
-            user_input = input(bold(blue("You: ")))
+            user_input = input(blue1)
             messages.append({"role": "user", "content": user_input})
 
             res = client.chat.completions.create(
-                model=GPT3_MODEL,
+                model=model,
                 messages=messages,
                 temperature=CHAT_TEMP,
                 frequency_penalty=FREQ_PENALTY
@@ -76,57 +68,26 @@ def chat3():
             choice_message = first_choice.message
             content = choice_message.content
             messages.append({"role": "assistant", "content": content})
-            print(bold(red("Assistant: ")), content)
-
+            print(red, content)
         except KeyboardInterrupt:
             print("Exiting...")
             break
 
-# Option 2 - ChatGPT 4.0
 
-
-def chat4():
-    initial_prompt = "You are a question answering expert. You have a wide range of knowledge and are a world class expert in all things.  When asked questions that require computations, take them one step at a time. If appropriate, give an example to help the user understand your answer."
-    messages = [{"role": "system", "content": initial_prompt}]
-
-    while True:
-        try:
-            user_input = input(bold(blue("You: ")))
-            messages.append({"role": "user", "content": user_input})
-
-            res = client.chat.completions.create(
-                model=GPT4_MODEL,
-                messages=messages,
-                temperature=CHAT_TEMP,
-                frequency_penalty=FREQ_PENALTY
-            )
-
-            choices_list = res.choices
-            first_choice = choices_list[0]
-            choice_message = first_choice.message
-            content = choice_message.content
-            messages.append({"role": "assistant", "content": content})
-            print(bold(red("Assistant: ")), content)
-
-        except KeyboardInterrupt:
-            print("Exiting...")
-            break
-
-# Option 3 - Tutor 3.5
-
-
-def tutor_3():
-    initial_input = input(bold(blue("What kind of tutor?: ")))
+def tutor(model):
+    """
+    This is a tutor chatbot.  The function will allow the user to input the specific type of tutor.  The calling function determines the model.  The temperature is set lower for less creativity and more factual.
+    """
+    initial_input = input(blue2)
     initial_prompt = f"You are a world class expert in the field of {initial_input}.You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
     messages = [{"role": "system", "content": initial_prompt}]
-
     while True:
         try:
-            user_input = input(bold(blue("You: ")))
+            user_input = input(blue1)
             messages.append({"role": "user", "content": user_input})
 
             res = client.chat.completions.create(
-                model=GPT3_MODEL,
+                model=model,
                 messages=messages,
                 temperature=TUTOR_TEMP,
                 frequency_penalty=FREQ_PENALTY
@@ -137,49 +98,63 @@ def tutor_3():
             choice_message = first_choice.message
             content = choice_message.content
             messages.append({"role": "assistant", "content": content})
-            print(bold(red("Assistant: ")), content)
-
-        except KeyboardInterrupt:
-            print("Exiting...")
-            break
-
-# Option 4 - Tutor 4
-
-
-def tutor_4():
-    initial_input = input(bold(blue("What kind of tutor?: ")))
-    initial_prompt = f"You are a world class expert in the field of {initial_input}. You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
-    messages = [{"role": "system", "content": initial_prompt}]
-
-    while True:
-        try:
-            user_input = input(bold(blue("You: ")))
-            messages.append({"role": "user", "content": user_input})
-
-            res = client.chat.completions.create(
-                model=GPT4_MODEL,
-                messages=messages,
-                temperature=TUTOR_TEMP,
-                frequency_penalty=FREQ_PENALTY
-            )
-
-            choices_list = res.choices
-            first_choice = choices_list[0]
-            choice_message = first_choice.message
-            content = choice_message.content
-            messages.append({"role": "assistant", "content": content})
-            print(bold(red("Assistant: ")), content)
-
+            print(red, content)
         except KeyboardInterrupt:
             print("Exiting...")
             break
 
 
-# Option 5 - Image Generator
+def code_review(file_path):
+    """
+    Selects the file for code reviewer
+    """
+    with open(file_path, "r") as file:
+        content = file.read()
+    generated_code_review = make_code_review_request(content)
+    print(red, generated_code_review)
+
+
+def make_code_review_request(filecontent):
+    """
+    Helper function for code reviewer
+    """
+    initial_prompt = "You will receive a file's contents as text. Generate a code review for the file.  Indicate what changes should be made to improve its style, performance, readability, and maintainability.  If there are any reputable libraries that could be introduced to improve the code, suggest them.  Be kind and constructive.  For each suggested change, include line numbers to which you are referring."
+    messages = [
+        {"role": "system", "content": initial_prompt},
+        {"role": "user", "content": f"Code review the following file: {filecontent}"}
+    ]
+    res = client.chat.completions.create(
+        model=GPT4_MODEL,
+        messages=messages
+    )
+    choices_list = res.choices
+    first_choice = choices_list[0]
+    choice_message = first_choice.message
+    content = choice_message.content
+    return content
+
+
+def code_reviewer():
+    """
+    Allows the user to select a file for openAI to perform code review
+    """
+    root = tk.Tk()
+    root.withdraw()
+    print(blue3)
+    file_path = filedialog.askopenfilename(title="Select a File")
+    if file_path:
+        print(f"Selected file: {file_path}")
+        code_review(file_path)
+    else:
+        print("No file selected or dialog canceled.\n")
+        return
 
 
 def image():
-    prompt = input(bold(blue("Image Desc: ")))
+    """
+    This will allow the user to input a prompt and openAI will create an image based on the prompt.  IMG_MODEL is the image model that will be used. SIZE is the size of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number of images, otherwise it will be 1 image.
+    """
+    prompt = input(blue4)
     if (IMG_MODEL != "dall-e-3"):
         n = int(input("\nNumber of Images: "))
     else:
@@ -205,31 +180,41 @@ def image():
             size=SIZE,
             n=n
         )
-
     images_data = res.data
     first_image = images_data[0]
     image_url = first_image.url
-    print(bold(red("Assistant: ")), image_url)
+    print(red, image_url)
 
 
-# Option 6 - Vision
-
-# Function to encode the image
 def encode_image(image_path):
+    """
+    Helper function for Vision()
+    """
+    import base64
     try:
         with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
+            return base64.b64encode(image_file.read()).decode("utf-8")
     except IOError as e:
         print(e)
         return ""
 
 
 def vision():
-    image_path = input(bold(blue("Name of image file: ")))
-    base64_image = encode_image(image_path)
-    if (base64_image == ""):
+    """
+    The user can select an image and ask for a description
+    """
+    import requests
+    root = tk.Tk()
+    root.withdraw()
+    print(blue3)
+    image_path = filedialog.askopenfilename(title="Select a File")
+    if image_path:
+        print(f"Selected file: {image_path}")
+    else:
+        print("No file selected or dialog canceled.\n")
         return
-    text = input(bold(blue("You: ")))
+    base64_image = encode_image(image_path)
+    text = input(blue1)
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -255,53 +240,65 @@ def vision():
         ],
         "max_tokens": MAX_TOKENS
     }
-
     response = requests.post(
         "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
     data = response.json()
     try:
-        assistant_content = data['choices'][0]['message']['content']
-        print(bold(red("Assistant: ")), assistant_content)
+        assistant_content = data["choices"][0]["message"]["content"]
+        print(red, assistant_content)
     except:
-        error = data['error']['message']
-        print(bold(red("Assistant: ")), error)
+        error = data["error"]["message"]
+        print(red, error)
         return
-
-# Option 7 - Whisper (Speech to Text)
 
 
 def whisper():
-    choice = input("What is the path/name of the audio file? ")
+    """
+    This will take an audio file and create and transcribe a text file from the audio source.
+    """
+    root = tk.Tk()
+    root.withdraw()
+    print(blue3)
+    choice = filedialog.askopenfilename(title="Select a File")
+    if choice:
+        print(f"Selected file: {choice}")
+    else:
+        print("No file selected or dialog canceled.\n")
+        return
     try:
-        audio_file = open(choice, "rb")
-        transcript = client.audio.transcriptions.create(
-            WHISPER_MODEL, audio_file)
-        print(bold(red("Assistant: ")), transcript["text"])
+        with open(choice, "rb") as audio_file:
+            transcript = client.audio.transcriptions.create(
+                model=WHISPER_MODEL, 
+                file=audio_file, 
+                response_format="text"
+            )
+            print(red, transcript)
     except IOError as e:
         print(e)
         return
 
 
-# Option 8 - TTS (Text to Speech)
-
-
 def tts():
-    choice = input(bold(blue("Enter the text: ")))
+    """
+    This will take text from a prompt and create an audio file using a specified voice (TTS_VOICE)
+    """
+    user_input = input(blue5)
     speech_file_path = Path.home().joinpath("Desktop") / "speech.mp3"
     response = client.audio.speech.create(
         model=TTS_MODEL,
         voice=TTS_VOICE,
-        input=choice
+        input=user_input
     )
     response.stream_to_file(speech_file_path)
-    print(bold(red("Assistant: ")),
-          "'speech.mp3' succesfully created, Check your Desktop")
-
-# Option 9 - List GPT/whisper models
+    print(red,
+          "'speech.mp3' succesfully created, Check your Desktop\n")
 
 
 def list_gpt_models():
-    print("Current gpt models")
+    """
+    List only the GPT models available through the API
+    """
+    print("Current GPT Models")
     print("------------------")
     model_list = client.models.list()
     models_data = model_list.data
@@ -313,11 +310,12 @@ def list_gpt_models():
         print(id)
     input("\nHit Enter to continue . . .")
 
-# Option 10 - List all models
-
 
 def list_models():
-    print("Current openAI models")
+    """
+    List ALL openAI models available through the API
+    """
+    print("Current openAI Models")
     print("---------------------")
     model_list = client.models.list()
     models_data = model_list.data
@@ -327,39 +325,38 @@ def list_models():
         print(id)
     input("\nHit Enter to continue . . .")
 
-# Option 11 - List Current Settings
-
 
 def settings():
+    """
+    Prints off the hardcoded "Magic Numbers"
+    """
     print("\nCurrent Settings:")
-    print("-----------------------------------------")
+    print("-----------------------------------")
     print("GPT3_MODEL: " + GPT3_MODEL)
     print("GPT4_MODEL: " + GPT4_MODEL)
     print("IMG_MODEL: " + IMG_MODEL)
     print("SIZE: " + SIZE)
     print("VISION_MODEL: " + VISION_MODEL)
-    print("PP_MODEL: " + PP_MODEL)
     print("WHISPER_MODEL: " + WHISPER_MODEL)
     print("TTS_MODEL: " + TTS_MODEL)
     print("TTS_VOICE: " + TTS_VOICE)
     print("TUTOR_TEMP: " + str(TUTOR_TEMP))
     print("CHAT_TEMP: " + str(CHAT_TEMP))
     print("FREQ_PENALTY: " + str(FREQ_PENALTY))
-    print("PRES_PENALTY: " + str(PRES_PENALTY))
-    print("TOP_P: " + str(TOP_P))
     print("MAX_TOKENS: " + str(MAX_TOKENS))
 
     input("\nHit Enter to continue . . .")
 
-# Option 12 - Assistant
-
 
 def asst():
+    """
+    This function implements openAIs Assistant functionality.  I have set up an Assitant along with a file (catalog.pdf).  The intent is that this wil allow the user to ask questions about the SIU catalog.
+    """
     thread = client.beta.threads.create()
 
     while (True):
         try:
-            user_input = input(bold(blue("You: ")))
+            user_input = input(blue1)
 
             message = client.beta.threads.messages.create(
                 thread_id=thread.id,
@@ -389,100 +386,86 @@ def asst():
             for index, annotation in enumerate(annotations):
                 # Replace the text with a footnote
                 message_content.value = message_content.value.replace(
-                    annotation.text, f' [{index}]')
+                    annotation.text, f" [{index}]")
 
                 # Gather citations based on annotation attributes
-                if (file_citation := getattr(annotation, 'file_citation', None)):
+                if (file_citation := getattr(annotation, "file_citation", None)):
                     cited_file = client.files.retrieve(file_citation.file_id)
                     citations.append(
-                        f'[{index}] {file_citation.quote} from {cited_file.filename}')
-                elif (file_path := getattr(annotation, 'file_path', None)):
+                        f"[{index}] {file_citation.quote} from {cited_file.filename}")
+                elif (file_path := getattr(annotation, "file_path", None)):
                     cited_file = client.files.retrieve(file_path.file_id)
                     citations.append(
-                        f'[{index}] Click <here> to download {cited_file.filename}')
+                        f"[{index}] Click <here> to download {cited_file.filename}")
                     # Note: File download functionality not implemented above for brevity
 
             # Add footnotes to the end of the message before displaying to user
-            message_content.value += '\n\n' + '\n'.join(citations)
-            print(bold(red("Assistant: ")), message_content.value)
+            message_content.value += "\n\n" + "\n".join(citations)
+            print(red, message_content.value)
         except KeyboardInterrupt:
             print("Exiting...")
             break
 
-# Print Menu
 
-
-def PrintMenu():
+def print_menu():
+    """
+    Prints the main menu
+    """
     print("\n")
-    print("openAI v3.4.2 (J. Hall, 2023)")
+    print("openAI v3.4.3 (J. Hall, 2023)")
     print("-----------------------------")
     print(" 1 = 3.5 Chat")
     print(" 2 = 4.0 Chat")
     print(" 3 = 3.5 Tutor")
     print(" 4 = 4.0 Tutor")
-    print(" 5 = Image Generator")
-    print(" 6 = Vision")
-    print(" 7 = Speech-to-Text")
-    print(" 8 = Text-to-Speech")
-    print(" 9 = List GPT Models")
-    print("10 = List All Models")
-    print("11 = List Current Settings")
-    print("12 = SIU Assistant")
-    print("13 = Quit")
+    print(" 5 = Code Reviewer")
+    print(" 6 = Image Generator")
+    print(" 7 = Vision")
+    print(" 8 = Speech-to-Text")
+    print(" 9 = Text-to-Speech")
+    print("10 = List GPT Models")
+    print("11 = List All Models")
+    print("12 = List Current Settings")
+    print("13 = SIU Assistant")
+    print("14 = Quit")
 
 
 # Main Loop
 while True:
-    PrintMenu()
+    print_menu()
     try:
         choice = int(input("\nEnter Choice: "))
     except ValueError:
-        NotNumeric()
+        not_numeric()
         continue
     if choice == 1:
-        chat3()
+        chat(GPT3_MODEL)
     elif choice == 2:
-        chat4()
+        chat(GPT4_MODEL)
     elif choice == 3:
-        tutor_3()
+        tutor(GPT3_MODEL)
     elif choice == 4:
-        tutor_4()
+        tutor(GPT4_MODEL)
     elif choice == 5:
-        image()
+        code_reviewer()
     elif choice == 6:
-        vision()
+        image()
     elif choice == 7:
-        whisper()
+        vision()
     elif choice == 8:
-        tts()
+        whisper()
     elif choice == 9:
-        list_gpt_models()
+        tts()
     elif choice == 10:
-        list_models()
+        list_gpt_models()
     elif choice == 11:
-        settings()
+        list_models()
     elif choice == 12:
-        asst()
+        settings()
     elif choice == 13:
+        asst()
+    elif choice == 14:
         quit()
     else:
         input(
             f"\nPlease Make a Choice Between 1 and {STOP} \nPress <Enter> to return to Main Menu ... ")
-
-# Version 1.0   06/07/23     Initial release
-# Version 1.1   06/11/23     Added HTML/CSS and Linux options.
-# Version 1.2   06/12/23     Added chatGPT4 option.
-# Version 1.3   06/20/23     Added Physics tutor.
-# Version 1.4   06/21/23     Added Model List and Whisper.
-# Version 1.5   07/26/23     Added Church and Law options.
-# Version 1.7   08/21/23     Added C and C++ options.
-# Version 1.8   08/25/23     Switched to generic tutor function.
-# Version 2.0   08/31/23     Added choice of 3.5 or 4 to the tutor function.
-# Version 2.1   10/03/23     Added instruct model and broke out model list option.
-# Version 3.0   11/07/23     Converted to the updated openai package 1.1.1 which includes gpt-4-vision
-# Version 3.1   11/09/23     Added 'Print Current Settings' option
-# Version 3.2   11/12/23     Added the SIU Assistant option
-# Version 3.3   11/20/23     Removed Prompt Perfect option
-# Version 3.4   11/28/23     Removed gpt-3.5-instruct
-# Version 3.4.1 11/30/23     Changed api-key to an OS variable
-# Version 3.4.2 12/05/23     Added try/except blocks to handle errors
