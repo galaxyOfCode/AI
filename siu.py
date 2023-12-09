@@ -3,6 +3,7 @@ from termcolor import colored
 blue1 = colored("You: ", "light_blue", attrs=["bold"])
 red = colored("Assistant: ", "light_red", attrs=["bold"])
 
+
 def asst(client):
     '''
     This function implements openAIs Assistant functionality.  I have set up an Assitant along with a file (catalog.pdf).  The intent is that this wil allow the user to ask questions about the SIU catalog.

@@ -4,3 +4,4 @@ prompts.xlsx
 .dist
 *.png
 *.txt
+*.pyc

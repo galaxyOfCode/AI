@@ -6,11 +6,11 @@ import tkinter as tk
 from tkinter import filedialog
 import configparser
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-GPT4_MODEL = config['PARAM']['GPT4_MODEL'] # latest chatGPT 4 model
+cfg = configparser.ConfigParser()
+cfg.read('config.ini')
+GPT4_MODEL = cfg['PARAM']['GPT4_MODEL']
 
-blue3 = colored("Select a File: ", "light_blue", attrs=["bold"])
+blue1 = colored("Select a File: ", "light_blue", attrs=["bold"])
 red = colored("Assistant: ", "light_red", attrs=["bold"])
 
 # get api_key from user's shell config file#
@@ -24,6 +24,7 @@ except ValueError as e:
     sys.exit(1)
 
 client = OpenAI()
+
 
 def code_review(file_path):
     '''
@@ -63,7 +64,7 @@ def code_reviewer():
     '''
     root = tk.Tk()
     root.withdraw()
-    print(blue3)
+    print(blue1)
     file_path = filedialog.askopenfilename(title="Select a File")
     if file_path:
         print(f"Selected file: {file_path}")

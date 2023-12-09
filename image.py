@@ -3,25 +3,25 @@ from tkinter import filedialog
 from termcolor import colored
 import configparser
 
-config = configparser.ConfigParser()
-config.read("config.ini")
-IMG_MODEL = config['PARAM']['IMG_MODEL']
-SIZE = config['PARAM']['SIZE']
-QUALITY = config['PARAM']['QUALITY']
-VISION_MODEL = config['PARAM']['VISION_MODEL']
-MAX_TOKENS = config.getint('PARAM', 'MAX_TOKENS') # maximum tokens allowed
+cfg = configparser.ConfigParser()
+cfg.read("config.ini")
+IMG_MODEL = cfg['PARAM']['IMG_MODEL']
+SIZE = cfg['PARAM']['SIZE']
+QUALITY = cfg['PARAM']['QUALITY']
+VISION_MODEL = cfg['PARAM']['VISION_MODEL']
+MAX_TOKENS = cfg.getint('PARAM', 'MAX_TOKENS')
 
-blue1 = colored("You: ", "light_blue", attrs=["bold"])
-blue3 = colored("Select a File: ", "light_blue", attrs=["bold"])
-blue4 = colored("Image Description: ", "light_blue", attrs=["bold"])
+blue1 = colored("Select a File: ", "light_blue", attrs=["bold"])
+blue2 = colored("Image Description: ", "light_blue", attrs=["bold"])
 red = colored("Assistant: ", "light_red", attrs=["bold"])
+
 
 def image(client):
     '''
     This will allow the user to input a prompt and openAI will create an image based on the prompt.  IMG_MODEL is the image model that will be used. SIZE is the size of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number of images, otherwise it will be 1 image.
     '''
     try:
-        prompt = input(blue4)
+        prompt = input(blue2)
         if (IMG_MODEL != "dall-e-3"):
             n = int(input("\nNumber of Images: "))
             res = client.images.generate(
@@ -44,11 +44,11 @@ def image(client):
         print("Something went wrong")
         print("Exiting...")
         return
-    
+
 
 def encode_image(image_path):
     '''
-    Helper function for Vision()
+    Helper function for vision()
     '''
     import base64
     try:
@@ -68,7 +68,7 @@ def vision(api_key):
     from requests.exceptions import HTTPError, Timeout, RequestException
     root = tk.Tk()
     root.withdraw()
-    print(blue3)
+    print(blue1)
     image_path = filedialog.askopenfilename(title="Select a File")
     if image_path:
         print(f"Selected file: {image_path}")
@@ -78,7 +78,6 @@ def vision(api_key):
     base64_image = encode_image(image_path)
     if (base64_image == ""):
         return
-    text = input(blue1)
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -91,7 +90,7 @@ def vision(api_key):
                 "content": [
                     {
                         "type": "text",
-                        "text": text
+                        "text": "What's in this image?"
                     },
                     {
                         "type": "image_url",

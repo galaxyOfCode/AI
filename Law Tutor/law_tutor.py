@@ -3,11 +3,9 @@ import sys
 from openai import OpenAI
 import configparser
 from termcolor import colored
-from chat import chat, tutor
-from image import vision, image
-from code_review import code_reviewer
+from chat_law import chat, tutor
+from image import image
 from voice import tts, whisper
-from siu import asst
 
 cfg = configparser.ConfigParser()
 cfg.read('config.ini')
@@ -21,7 +19,6 @@ TUTOR_TEMP = cfg.getfloat('PARAM', 'TUTOR_TEMP')
 IMG_MODEL = cfg['PARAM']['IMG_MODEL']
 SIZE = cfg['PARAM']['SIZE']
 QUALITY = cfg['PARAM']['QUALITY']
-VISION_MODEL = cfg['PARAM']['VISION_MODEL']
 WHISPER_MODEL = cfg['PARAM']['WHISPER_MODEL']
 TTS_MODEL = cfg['PARAM']['TTS_MODEL']
 TTS_VOICE = cfg['PARAM']['TTS_VOICE']
@@ -47,38 +44,6 @@ def not_numeric():
     return
 
 
-def list_gpt_models():
-    '''
-    List only the GPT models available through the API
-    '''
-    print("Current GPT Models")
-    print("------------------")
-    model_list = client.models.list()
-    models_data = model_list.data
-    model_ids = [model.id for model in models_data]
-    gpt_model_ids = [
-        model_id for model_id in model_ids if model_id.startswith("gpt")]
-    gpt_model_ids.sort()
-    for id in gpt_model_ids:
-        print(id)
-    input("\nHit Enter to continue . . .")
-
-
-def list_models():
-    '''
-    List ALL openAI models available through the API
-    '''
-    print("Current openAI Models")
-    print("---------------------")
-    model_list = client.models.list()
-    models_data = model_list.data
-    model_ids = [model.id for model in models_data]
-    model_ids.sort()
-    for id in model_ids:
-        print(id)
-    input("\nHit Enter to continue . . .")
-
-
 def settings():
     '''
     Prints off the hardcoded "Magic Numbers"
@@ -90,7 +55,6 @@ def settings():
     print(colored("IMG_MODEL: \t", "blue", attrs=["bold"]), IMG_MODEL)
     print(colored("SIZE: \t\t", "blue", attrs=["bold"]), SIZE)
     print(colored("QUALITY: \t", "blue", attrs=["bold"]), QUALITY)
-    print(colored("VISION_MODEL:\t", "blue", attrs=["bold"]), VISION_MODEL)
     print(colored("WHISPER_MODEL: \t", "blue",
           attrs=["bold"]), WHISPER_MODEL)
     print(colored("TTS_MODEL: \t", "blue", attrs=["bold"]), TTS_MODEL)
@@ -107,22 +71,17 @@ def print_menu():
     Prints the main menu
     '''
     print("\n")
-    print("AI Assistant v3.5.1 (J. Hall, 2023)")
-    print("-----------------------------------")
-    print(" 1 = 3.5 Chat")
-    print(" 2 = 4.0 Chat")
-    print(" 3 = 3.5 Tutor")
-    print(" 4 = 4.0 Tutor")
-    print(" 5 = Code Reviewer")
-    print(" 6 = Image Generator")
-    print(" 7 = Vision")
-    print(" 8 = Speech-to-Text")
-    print(" 9 = Text-to-Speech")
-    print("10 = List GPT Models")
-    print("11 = List All Models")
-    print("12 = List Current Settings")
-    print("13 = SIU Assistant")
-    print("14 = Quit")
+    print("AI Assistant v3.5 (J. Hall, 2023)")
+    print("---------------------------------")
+    print(" 1 = 4.0 Law Tutor")
+    print(" 2 = 3.5 Law Tutor")
+    print(" 3 = 4.0 Chat")
+    print(" 4 = 3.5 Chat")
+    print(" 5 = Image Generator")
+    print(" 6 = Speech-to-Text")
+    print(" 7 = Text-to-Speech")
+    print(" 8 = List Current Settings")
+    print(" 9 = Quit")
 
 
 # Main Loop
@@ -134,32 +93,22 @@ while True:
         not_numeric()
         continue
     if choice == 1:
-        chat(GPT3_MODEL, client)
-    elif choice == 2:
-        chat(GPT4_MODEL, client)
-    elif choice == 3:
-        tutor(GPT3_MODEL, client)
-    elif choice == 4:
         tutor(GPT4_MODEL, client)
+    elif choice == 2:
+        tutor(GPT3_MODEL, client)
+    elif choice == 3:
+        chat(GPT4_MODEL, client)
+    elif choice == 4:
+        chat(GPT3_MODEL, client)
     elif choice == 5:
-        code_reviewer()
-    elif choice == 6:
         image(client)
-    elif choice == 7:
-        vision(api_key)
-    elif choice == 8:
+    elif choice == 6:
         whisper(client)
-    elif choice == 9:
+    elif choice == 7:
         tts(client)
-    elif choice == 10:
-        list_gpt_models()
-    elif choice == 11:
-        list_models()
-    elif choice == 12:
+    elif choice == 8:
         settings()
-    elif choice == 13:
-        asst(client)
-    elif choice == 14:
+    elif choice == 9:
         quit()
     else:
         input(

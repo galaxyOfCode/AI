@@ -8,7 +8,6 @@ CHAT_TEMP = cfg.getfloat('PARAM', 'CHAT_TEMP')
 TUTOR_TEMP = cfg.getfloat('PARAM', 'TUTOR_TEMP')
 
 blue1 = colored("You: ", "light_blue", attrs=["bold"])
-blue2 = colored("What kind of tutor: ", "light_blue", attrs=["bold"])
 red = colored("Assistant: ", "light_red", attrs=["bold"])
 
 
@@ -38,10 +37,9 @@ def chat(model, client):
 
 def tutor(model, client):
     '''
-    This is a tutor chatbot.  The function will allow the user to input the specific type of tutor.  The calling function determines the model.  The temperature is set lower for less creativity and more factual.
+    This is a law tutor chatbot.  The calling function determines the model.  The temperature is set lower for less creativity and more factual.
     '''
-    initial_input = input(blue2)
-    initial_prompt = f"You are a world class expert in the field of {initial_input}. You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
+    initial_prompt = f"You are a world class law school expert. The user is in law school or studying for the bar examination. You will answer the user's questions with enough detail that the user will be able to understand how you arrived at the answer.  Your answers can include examples if that will help the user better understand your answer."
     messages = [{"role": "system", "content": initial_prompt}]
     while True:
         try:
