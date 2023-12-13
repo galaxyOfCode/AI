@@ -107,7 +107,7 @@ def print_menu():
     Prints the main menu
     '''
     print("\n")
-    print("AI Assistant v3.5.1 (J. Hall, 2023)")
+    print("AI Assistant v3.5.2 (J. Hall, 2023)")
     print("-----------------------------------")
     print(" 1 = 3.5 Chat")
     print(" 2 = 4.0 Chat")

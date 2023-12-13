@@ -5,6 +5,7 @@ from termcolor import colored
 import tkinter as tk
 from tkinter import filedialog
 import configparser
+import pyperclip
 
 cfg = configparser.ConfigParser()
 cfg.read('config.ini')
@@ -35,6 +36,7 @@ def code_review(file_path):
             content = file.read()
         generated_code_review = make_code_review_request(content)
         print(red, generated_code_review)
+        pyperclip.copy(generated_code_review)
     except PermissionError:
         print("Error: Permission denied when trying to read the file.")
     except OSError:

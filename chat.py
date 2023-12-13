@@ -1,5 +1,6 @@
 from termcolor import colored
 import configparser
+import pyperclip
 
 cfg = configparser.ConfigParser()
 cfg.read('config.ini')
@@ -31,6 +32,7 @@ def chat(model, client):
             )
             content = res.choices[0].message.content
             print(red, content)
+            pyperclip.copy(content)
         except KeyboardInterrupt:
             print("Exiting...")
             break
@@ -56,6 +58,7 @@ def tutor(model, client):
             )
             content = res.choices[0].message.content
             print(red, content)
+            pyperclip.copy(content)
         except KeyboardInterrupt:
             print("Exiting...")
             break

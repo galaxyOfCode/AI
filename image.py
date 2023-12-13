@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from termcolor import colored
 import configparser
+import pyperclip
 
 cfg = configparser.ConfigParser()
 cfg.read("config.ini")
@@ -40,6 +41,7 @@ def image(client):
             )
         image_url = res.data[0].url
         print(red, image_url)
+        pyperclip.copy(image_url)
     except:
         print("Something went wrong")
         print("Exiting...")
@@ -122,6 +124,7 @@ def vision(api_key):
     try:
         assistant_content = data["choices"][0]["message"]["content"]
         print(red, assistant_content)
+        pyperclip.copy(assistant_content)
     except:
         error = data["error"]["message"]
         print(red, error)

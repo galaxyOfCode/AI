@@ -1,4 +1,5 @@
 from termcolor import colored
+import pyperclip
 
 blue1 = colored("You: ", "light_blue", attrs=["bold"])
 red = colored("Assistant: ", "light_red", attrs=["bold"])
@@ -58,6 +59,7 @@ def asst(client):
             # Add footnotes to the end of the message before displaying to user
             message_content.value += "\n\n" + "\n".join(citations)
             print(red, message_content.value)
+            pyperclip.copy(message_content.value)
         except KeyboardInterrupt:
             print("Exiting...")
             break
