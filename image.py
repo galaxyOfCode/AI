@@ -3,13 +3,14 @@ import pyperclip
 from termcolor import colored
 import tkinter as tk
 from tkinter import filedialog
+from errors import handle_request_errors, handle_openai_errors, handle_file_errors
 
 user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
 image_prompt = colored("Image Description: ", "light_blue", attrs=["bold"])
 assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
 
 
-def image(client, model, size):
+def image(client, model, quality):
     '''
     This will allow the user to input a prompt and openAI will create an image based on the prompt.  IMG_MODEL is the image model that will be used. SIZE is the size of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number of images, otherwise it will be 1 image.
     '''
@@ -20,31 +21,21 @@ def image(client, model, size):
             res = client.images.generate(
                 model=model,
                 prompt=prompt,
-                size=size,
                 n=n,
             )
         else:
             res = client.images.generate(
                 model=model,
                 prompt=prompt,
-                size=size,
+                quality=quality,
                 n=1
             )
         image_url = res.data[0].url
         print(f"{assistant_prompt} {image_url}")
         pyperclip.copy(image_url)
-    except openai.APIConnectionError as e:
-        print("The server could not be reached")
-        print(e.__cause__)
-        return
-    except openai.RateLimitError as e:
-        print("A 429 status code was received; we should back off a bit.")
-        return
-    except openai.APIStatusError as e:
-        print("Another non-200-range status code was received")
-        print(e.status_code)
-        print(e.response)
-        return
+    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
+        content = handle_openai_errors(e)
+        return content
     except KeyboardInterrupt:
         print("Exiting...")
         return
@@ -54,24 +45,12 @@ def image(client, model, size):
         return
 
 
-def encode_image(image_path):
-    '''
-    Helper function for vision()
-    '''
-    import base64
-    try:
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode("utf-8")
-    except OSError as e:
-        print(e)
-        return ""
-
-
 def vision(api_key, model, max_tokens):
     '''
     The user can select an image and ask for a description
     '''
     import requests
+    import base64
     from requests.exceptions import HTTPError, Timeout, RequestException
     root = tk.Tk()
     root.withdraw()
@@ -82,9 +61,12 @@ def vision(api_key, model, max_tokens):
     else:
         print("No file selected or dialog canceled.\n")
         return
-    base64_image = encode_image(image_path)
-    if (base64_image == ""):
-        return
+    try:
+        with open(image_path, "rb") as image_file:
+            base64_image = base64.b64encode(image_file.read()).decode("utf-8")
+    except (PermissionError, OSError, FileNotFoundError) as e:
+            content = handle_file_errors(e)
+            return content
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -114,18 +96,9 @@ def vision(api_key, model, max_tokens):
         response = requests.post(
             "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
         data = response.json()
-    except HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-        return
-    except Timeout as timeout_err:
-        print(f"Request timed out: {timeout_err}")
-        return
-    except RequestException as req_err:
-        print(f"Error during request: {req_err}")
-        return
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        return
+    except (HTTPError, Timeout, RequestException, Exception) as e:
+                content = handle_request_errors(e)
+                return content
     except KeyboardInterrupt:
         print("Exiting...")
         return
