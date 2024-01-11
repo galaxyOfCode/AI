@@ -1,12 +1,12 @@
 from openai import OpenAI
 from chat import chat
 from code_review import code_review
+from config import Config
 from image import vision, image
 from voice import tts, whisper
-from utilities import print_menu, not_numeric, list_models, settings, Config
+from utilities import print_menu, not_numeric, list_models, settings
 
 
-# Main Loop
 def main():
     config = Config()
     client = OpenAI()
@@ -44,7 +44,7 @@ def main():
         elif choice == 11:
             list_models(client, 1)
         elif choice == 12:
-            settings()
+            settings(config)
         elif choice == 13:
             exit()
         else:

@@ -5,17 +5,17 @@ import tkinter as tk
 from tkinter import filedialog
 from errors import handle_openai_errors, handle_file_errors
 
-user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
-assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
 
-
-def code_review(client, model):
-    '''
+def code_review(client, model) -> str:
+    """
     Reviews a code file.
     
     Allows the user to select a file for openAI to review the code for
     style, performance, readability, and maintainability.  
-    '''
+    """
+    
+    user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
+    assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
     root = tk.Tk()
     root.withdraw()
     print(user_prompt)
@@ -42,11 +42,11 @@ def code_review(client, model):
             content = res.choices[0].message.content
         except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
                 content = handle_openai_errors(e)
-                return content
+                print(f"{assistant_prompt} {content}")
         print(f"{assistant_prompt} {content}")
         pyperclip.copy(content)
         root.destroy()
         return
     except (PermissionError, OSError, FileNotFoundError) as e:
             content = handle_file_errors(e)
-            return content
+            print(f"{assistant_prompt} {content}")

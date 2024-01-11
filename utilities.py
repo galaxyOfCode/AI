@@ -1,40 +1,11 @@
-import os
-import configparser
 from termcolor import colored
 
-class Config:
-    def __init__(self, config_file='config.ini'):
-        self.cfg = configparser.ConfigParser()
-        self.cfg.read(config_file)
-        self.load_settings()
 
-    def load_settings(self):
-        self.STOP = self.cfg.getint('PARAM', 'STOP')
-        self.MAX_TOKENS = self.cfg.getint('PARAM', 'MAX_TOKENS')
-        self.GPT3_MODEL = self.cfg['PARAM']['GPT3_MODEL']
-        self.GPT4_MODEL = self.cfg['PARAM']['GPT4_MODEL']
-        self.FREQ_PENALTY = self.cfg.getfloat('PARAM', 'FREQ_PENALTY')
-        self.CHAT_TEMP = self.cfg.getfloat('PARAM', 'CHAT_TEMP')
-        self.TUTOR_TEMP = self.cfg.getfloat('PARAM', 'TUTOR_TEMP')
-        self.IMG_MODEL = self.cfg['PARAM']['IMG_MODEL']
-        self.QUALITY = self.cfg['PARAM']['QUALITY']
-        self.VISION_MODEL = self.cfg['PARAM']['VISION_MODEL']
-        self.WHISPER_MODEL = self.cfg['PARAM']['WHISPER_MODEL']
-        self.TTS_MODEL = self.cfg['PARAM']['TTS_MODEL']
-        self.TTS_VOICE = self.cfg['PARAM']['TTS_VOICE']
-        self.api_key = self.get_api_key()
+def print_menu() -> None:
+    """Prints the Main Menu"""
 
-    def get_api_key(self):
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("API key not found in environment variables.")
-        return api_key
-
-
-def print_menu():
-    '''Prints the main menu'''
     print("\n")
-    print(f"AI Assistant (J. Hall, 2023)\n")
+    print(f"AI Assistant (J. Hall, 2023-2024)\n")
     print(" 1 = 3.5 Chat")
     print(" 2 = 4.0 Chat")
     print(" 3 = 3.5 Tutor")
@@ -50,15 +21,15 @@ def print_menu():
     print("13 = Quit")
 
     
-def not_numeric():
-    '''Error message if menu choice is not numeric'''
+def not_numeric() -> None:
+    """Error message if menu choice is not numeric"""
 
     input("\nYou Entered a non-numeric value or wrong format.\nPress <Enter> to continue ... ")
-    return
 
 
-def list_models(client, option):
-    '''List only the GPT models available through the API'''    
+def list_models(client, option) -> None:
+    """List only the GPT models available through the API"""
+
     model_list = client.models.list()
     models_data = model_list.data
     model_ids = [model.id for model in models_data]
@@ -73,9 +44,9 @@ def list_models(client, option):
     input("\nHit Enter to continue . . .")
 
 
-def settings():
-    '''Prints off the hardcoded "Magic Numbers" '''
-    config = Config()
+def settings(config) -> None:
+    """Prints off the hardcoded "Magic Numbers" """
+
     print("\nCurrent Settings:\n")
     print(colored("GPT3_MODEL: \t", "blue", attrs=["bold"]), config.GPT3_MODEL)
     print(colored("GPT4_MODEL: \t", "blue", attrs=["bold"]), config.GPT4_MODEL)
