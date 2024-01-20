@@ -8,7 +8,7 @@ class Config:
         self.load_settings()
 
     def load_settings(self):
-        self.STOP = self.cfg.getint('OPENAI', 'STOP')
+        self.STOP = 13
         self.MAX_TOKENS = self.cfg.getint('OPENAI', 'MAX_TOKENS')
         self.GPT3_MODEL = self.cfg['OPENAI']['GPT3_MODEL']
         self.GPT4_MODEL = self.cfg['OPENAI']['GPT4_MODEL']

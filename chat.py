@@ -8,8 +8,7 @@ def chat(client, model, temperature, frequency_penalty, option) -> None:
     """ 
     This is an openAI chatbot.  
 
-    The options are model (gpt-3.5-turbo-1106, etc);  temperature; freqency_penalty
-    and option (1 for general chat and 0 for specific tutoring). All resonses will be displayed and copied to the clipboard.
+    The options are model (gpt-3.5-turbo-1106, etc);  temperature; freqency_penalty and option (1 for general chat and 0 for specific tutoring). All resonses will be displayed and copied to the clipboard.
     """
     
     user_prompt = colored("You: ", "light_blue", attrs=["bold"])
@@ -27,13 +26,13 @@ def chat(client, model, temperature, frequency_penalty, option) -> None:
             user_input = input(user_prompt)
             messages.append({"role": "user", "content": user_input})
 
-            res = client.chat.completions.create(
+            result = client.chat.completions.create(
                 model=model,
                 messages=messages,
                 temperature=temperature,
                 frequency_penalty=frequency_penalty
             )
-            content = res.choices[0].message.content
+            content = result.choices[0].message.content
             print(f"{assistant_prompt} {content}")
             pyperclip.copy(content)
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:

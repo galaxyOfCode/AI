@@ -7,7 +7,7 @@ from errors import (handle_request_errors,
                     handle_openai_errors, handle_file_errors)
 
 
-def image(client, model, quality) -> str:
+def generate_image(client, model, quality) -> str:
     """
     This will allow the user to input a prompt and openAI will create an image based on the prompt.  IMG_MODEL is the image model that will be used. SIZE is the size of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number of images, otherwise it will be 1 image.
     """
@@ -18,19 +18,19 @@ def image(client, model, quality) -> str:
         prompt = input(image_prompt)
         if (model != "dall-e-3"):
             n = int(input("\nNumber of Images: "))
-            res = client.images.generate(
+            result = client.images.generate(
                 model=model,
                 prompt=prompt,
                 n=n,
             )
         else:
-            res = client.images.generate(
+            result = client.images.generate(
                 model=model,
                 prompt=prompt,
                 quality=quality,
                 n=1
             )
-        image_url = res.data[0].url
+        image_url = result.data[0].url
         print(f"{assistant_prompt} {image_url}")
         pyperclip.copy(image_url)
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
@@ -46,7 +46,7 @@ def image(client, model, quality) -> str:
         return
 
 
-def vision(api_key, model, max_tokens) -> str:
+def describe_image(api_key, model, max_tokens) -> str:
     """The user can select an image and ask for a description"""
 
     import requests

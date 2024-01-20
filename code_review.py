@@ -35,11 +35,11 @@ def code_review(client, model) -> str:
                 {"role": "user", "content": f"Code review the following file: {content}"}
             ]
         try:
-            res = client.chat.completions.create(
+            result = client.chat.completions.create(
                 model=model,
                 messages=messages
             )
-            content = res.choices[0].message.content
+            content = result.choices[0].message.content
         except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
                 content = handle_openai_errors(e)
                 print(f"{assistant_prompt} {content}")

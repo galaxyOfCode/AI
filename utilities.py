@@ -20,7 +20,7 @@ def print_menu() -> None:
     print("12 = List Current Settings")
     print("13 = Quit")
 
-    
+
 def not_numeric() -> None:
     """Error message if menu choice is not numeric"""
 
@@ -44,7 +44,7 @@ def list_models(client, option) -> None:
     input("\nHit Enter to continue . . .")
 
 
-def settings(config) -> None:
+def list_settings(config) -> None:
     """Prints off the hardcoded "Magic Numbers" """
 
     print("\nCurrent Settings:\n")

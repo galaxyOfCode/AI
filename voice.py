@@ -7,7 +7,7 @@ from tkinter import filedialog
 from errors import handle_file_errors, handle_openai_errors
 
 
-def whisper(client, model) -> None:
+def speech_to_text(client, model) -> None:
     """
     Transcribes a voice file to text
 
@@ -42,13 +42,13 @@ def whisper(client, model) -> None:
         print("Exiting...")
 
 
-def tts(client, model, voice) -> None:
+def text_to_speech(client, model, voice) -> None:
     """
     Text to speech
 
     This will take text from a user prompt and create an audio file using a specified voice (TTS_VOICE). The new file will default to 'speech.mp3' and will be saved to the Desktop.
     """
-    
+
     text_prompt = colored("Enter the text: ", "light_blue", attrs=["bold"])
     assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
     try:
@@ -61,7 +61,8 @@ def tts(client, model, voice) -> None:
         )
         response.stream_to_file(speech_file_path)
         print(
-            f"{assistant_prompt} 'speech.mp3' succesfully created, Check your Desktop\n")
+            f"{assistant_prompt} 'speech.mp3' succesfully created, Check your Desktop\n"
+        )
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
         print(f"{assistant_prompt} {content}")

@@ -2,9 +2,9 @@ from openai import OpenAI
 from chat import chat
 from code_review import code_review
 from config import Config
-from image import vision, image
-from voice import tts, whisper
-from utilities import print_menu, not_numeric, list_models, settings
+from image import describe_image, generate_image
+from voice import text_to_speech, speech_to_text
+from utilities import (print_menu, not_numeric, list_models, list_settings)
 
 
 def main():
@@ -32,24 +32,26 @@ def main():
         elif choice == 5:
             code_review(client, config.GPT4_MODEL)
         elif choice == 6:
-            image(client, config.IMG_MODEL, config.QUALITY)
+            generate_image(client, config.IMG_MODEL, config.QUALITY)
         elif choice == 7:
-            vision(config.api_key, config.VISION_MODEL, config.MAX_TOKENS)
+            describe_image(config.api_key, config.VISION_MODEL,
+                           config.MAX_TOKENS)
         elif choice == 8:
-            whisper(client, config.WHISPER_MODEL)
+            speech_to_text(client, config.WHISPER_MODEL)
         elif choice == 9:
-            tts(client, config.TTS_MODEL, config.TTS_VOICE)
+            text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE)
         elif choice == 10:
             list_models(client, 0)
         elif choice == 11:
             list_models(client, 1)
         elif choice == 12:
-            settings(config)
+            list_settings(config)
         elif choice == 13:
             exit()
         else:
             input(
-                f"\nPlease Make a Choice Between 1 and {config.STOP} \nPress <Enter> to return to Main Menu ... ")
+                f"\nPlease Make a Choice Between 1 and {config.STOP}\n Press <Enter> to return to Main Menu ... "
+            )
 
 
 if __name__ == "__main__":
