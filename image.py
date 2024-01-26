@@ -3,34 +3,39 @@ import pyperclip
 from termcolor import colored
 import tkinter as tk
 from tkinter import filedialog
+
 from errors import (handle_request_errors,
-                    handle_openai_errors, handle_file_errors)
+                    handle_openai_errors, 
+                    handle_file_errors)
 
 
-def generate_image(client, model, quality) -> str:
+def generate_image(client, model, quality) -> None:
     """
-    This will allow the user to input a prompt and openAI will create an image based on the prompt.  IMG_MODEL is the image model that will be used. SIZE is the size of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number of images, otherwise it will be 1 image.
+    This will allow the user to input a prompt and openAI will create an image based
+    on the prompt.  IMG_MODEL is the image model that will be used. SIZE is the size
+    of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number
+    of images, otherwise it will be 1 image.
     """
     
     image_prompt = colored("Image Description: ", "light_blue", attrs=["bold"])
     assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
     try:
         prompt = input(image_prompt)
-        if (model != "dall-e-3"):
+        if model != "dall-e-3":
             n = int(input("\nNumber of Images: "))
-            result = client.images.generate(
+            response = client.images.generate(
                 model=model,
                 prompt=prompt,
                 n=n,
             )
         else:
-            result = client.images.generate(
+            response = client.images.generate(
                 model=model,
                 prompt=prompt,
                 quality=quality,
                 n=1
             )
-        image_url = result.data[0].url
+        image_url = response.data[0].url
         print(f"{assistant_prompt} {image_url}")
         pyperclip.copy(image_url)
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
@@ -40,13 +45,12 @@ def generate_image(client, model, quality) -> str:
     except KeyboardInterrupt:
         print("Exiting...")
         return
-    except Exception:
-        print("Something went wrong")
+    except Exception as e:
+        print(f"Something went wrong: {e}")
         print("Exiting...")
-        return
 
 
-def describe_image(api_key, model, max_tokens) -> str:
+def describe_image(api_key, model, max_tokens) -> None:
     """The user can select an image and ask for a description"""
 
     import requests
@@ -111,7 +115,7 @@ def describe_image(api_key, model, max_tokens) -> str:
         content = data["choices"][0]["message"]["content"]
         print(f"{assistant_prompt} {content}")
         pyperclip.copy(content)
-    except:
+    except Exception as e:
+        print(f"Something went wrong: {e}")
         error = data["error"]["message"]
         print(f"{assistant_prompt} {error}")
-        return

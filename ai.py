@@ -1,10 +1,12 @@
 from openai import OpenAI
+
 from chat import chat
-from code_review import code_review
+from reviewer import code_review
 from config import Config
 from image import describe_image, generate_image
 from voice import text_to_speech, speech_to_text
-from utilities import (print_menu, not_numeric, list_models, list_settings)
+from utilities import (print_menu, not_numeric,
+                       list_models, list_settings)
 
 
 def main():

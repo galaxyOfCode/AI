@@ -1,13 +1,12 @@
 import os
 from configparser import ConfigParser
 
+
 class Config:
     def __init__(self, config_file='config.ini'):
         self.cfg = ConfigParser()
         self.cfg.read(config_file)
-        self.load_settings()
 
-    def load_settings(self):
         self.STOP = 13
         self.MAX_TOKENS = self.cfg.getint('OPENAI', 'MAX_TOKENS')
         self.GPT3_MODEL = self.cfg['OPENAI']['GPT3_MODEL']
@@ -23,7 +22,8 @@ class Config:
         self.TTS_VOICE = self.cfg['OPENAI']['TTS_VOICE']
         self.api_key = self.get_api_key()
 
-    def get_api_key(self):
+    @staticmethod
+    def get_api_key():
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("API key not found in environment variables.")

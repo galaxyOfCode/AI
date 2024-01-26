@@ -4,6 +4,7 @@ import pyperclip
 from termcolor import colored
 import tkinter as tk
 from tkinter import filedialog
+
 from errors import handle_file_errors, handle_openai_errors
 
 
@@ -11,7 +12,9 @@ def speech_to_text(client, model) -> None:
     """
     Transcribes a voice file to text
 
-    This will take an audio file and create and transcribe a text file from the audio source. The transcription will appear as a text response from the assistant.  It will be copied to the clipboard.
+    This will take an audio file and create and transcribe a text file from the
+    audio source. The transcription will appear as a text response from the assistant.
+    It will be copied to the clipboard.
     """
 
     user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
@@ -46,7 +49,8 @@ def text_to_speech(client, model, voice) -> None:
     """
     Text to speech
 
-    This will take text from a user prompt and create an audio file using a specified voice (TTS_VOICE). The new file will default to 'speech.mp3' and will be saved to the Desktop.
+    This will take text from a user prompt and create an audio file using a specified voice
+    (TTS_VOICE). The new file will default to 'speech.mp3' and will be saved to the Desktop.
     """
 
     text_prompt = colored("Enter the text: ", "light_blue", attrs=["bold"])
