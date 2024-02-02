@@ -48,19 +48,25 @@ def list_settings(config) -> None:
     """Prints off the hardcoded "Magic Numbers" """
 
     print("\nCurrent Settings:\n")
-    print(colored("GPT3_MODEL: \t", "blue", attrs=["bold"]), config.GPT3_MODEL)
-    print(colored("GPT4_MODEL: \t", "blue", attrs=["bold"]), config.GPT4_MODEL)
-    print(colored("IMG_MODEL: \t", "blue", attrs=["bold"]), config.IMG_MODEL)
-    print(colored("QUALITY: \t", "blue", attrs=["bold"]), config.QUALITY)
-    print(colored("VISION_MODEL:\t", "blue",
+    print(colored("GPT3_MODEL: \t\t", "blue",
+          attrs=["bold"]), config.GPT3_MODEL)
+    print(colored("GPT4_MODEL: \t\t", "blue",
+          attrs=["bold"]), config.GPT4_MODEL)
+    print(colored("CODE_REVIEW_MODEL: \t", "blue",
+          attrs=["bold"]), config.GPT4_MODEL)
+    print(colored("IMG_MODEL: \t\t", "blue", attrs=["bold"]), config.IMG_MODEL)
+    print(colored("QUALITY: \t\t", "blue", attrs=["bold"]), config.QUALITY)
+    print(colored("VISION_MODEL:\t\t", "blue",
           attrs=["bold"]), config.VISION_MODEL)
-    print(colored("WHISPER_MODEL: \t", "blue",
+    print(colored("WHISPER_MODEL: \t\t", "blue",
           attrs=["bold"]), config.WHISPER_MODEL)
-    print(colored("TTS_MODEL: \t", "blue", attrs=["bold"]), config.TTS_MODEL)
-    print(colored("TTS_VOICE: \t", "blue", attrs=["bold"]), config.TTS_VOICE)
-    print(colored("TUTOR_TEMP: \t", "blue", attrs=["bold"]), config.TUTOR_TEMP)
-    print(colored("CHAT_TEMP: \t", "blue", attrs=["bold"]), config.CHAT_TEMP)
-    print(colored("FREQ_PENALTY: \t", "blue",
+    print(colored("TTS_MODEL: \t\t", "blue", attrs=["bold"]), config.TTS_MODEL)
+    print(colored("TTS_VOICE: \t\t", "blue", attrs=["bold"]), config.TTS_VOICE)
+    print(colored("TUTOR_TEMP: \t\t", "blue",
+          attrs=["bold"]), config.TUTOR_TEMP)
+    print(colored("CHAT_TEMP: \t\t", "blue", attrs=["bold"]), config.CHAT_TEMP)
+    print(colored("FREQ_PENALTY: \t\t", "blue",
           attrs=["bold"]), config.FREQ_PENALTY)
-    print(colored("MAX_TOKENS: \t", "blue", attrs=["bold"]), config.MAX_TOKENS)
+    print(colored("MAX_TOKENS: \t\t", "blue",
+          attrs=["bold"]), config.MAX_TOKENS)
     input("\nHit Enter to continue . . .")

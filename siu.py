@@ -6,16 +6,16 @@ red = colored("Assistant: ", "light_red", attrs=["bold"])
 
 
 def siu_assistant(client):
-    '''
+    """
     This function implements openAIs Assistant functionality.  I have set up an Assitant along with a file (catalog.pdf).  The intent is that this wil allow the user to ask questions about the SIU catalog.
-    '''
+    """
     thread = client.beta.threads.create()
 
     while (True):
         try:
             user_input = input(blue1)
 
-            message = client.beta.threads.messages.create(
+            client.beta.threads.messages.create(
                 thread_id=thread.id,
                 role="user",
                 content=user_input)
@@ -37,11 +37,9 @@ def siu_assistant(client):
             annotations = message_content.annotations
             citations = []
             for index, annotation in enumerate(annotations):
-                # Replace the text with a footnote
                 message_content.value = message_content.value.replace(
                     annotation.text, f" [{index}]")
 
-                # Gather citations based on annotation attributes
                 if (file_citation := getattr(annotation, "file_citation", None)):
                     cited_file = client.files.retrieve(file_citation.file_id)
                     citations.append(
@@ -50,9 +48,7 @@ def siu_assistant(client):
                     cited_file = client.files.retrieve(file_path.file_id)
                     citations.append(
                         f"[{index}] Click <here> to download {cited_file.filename}")
-                    # Note: File download functionality not implemented above for brevity
 
-            # Add footnotes to the end of the message before displaying to user
             message_content.value += "\n\n" + "\n".join(citations)
             print(red, message_content.value)
             pyperclip.copy(message_content.value)
