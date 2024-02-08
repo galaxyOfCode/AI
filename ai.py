@@ -6,7 +6,8 @@ from config import Config
 from image import describe_image, generate_image
 from voice import text_to_speech, speech_to_text
 from utilities import (print_menu, not_numeric,
-                       list_models, list_settings)
+                       list_models, list_settings, 
+                       update)
 
 
 def main():
@@ -14,11 +15,15 @@ def main():
     client = OpenAI()
     while True:
         print_menu()
-        try:
-            choice = int(input("\nEnter Choice: "))
-        except ValueError:
-            not_numeric()
-            continue
+        choice = input("Enter Choice: ")
+        if choice == "q" or choice == "Q":
+            choice = config.MENU_MAX
+        else:
+            try:
+                choice = int(choice)
+            except ValueError:
+                not_numeric()
+                continue
         if choice == 1:
             chat(client, config.GPT3_MODEL,
                  config.CHAT_TEMP, config.FREQ_PENALTY, 1)
@@ -49,6 +54,8 @@ def main():
         elif choice == 12:
             list_settings(config)
         elif choice == 13:
+            update()
+        elif choice == 14:
             exit()
         else:
             input(

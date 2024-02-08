@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 from errors import (handle_request_errors,
-                    handle_openai_errors, 
+                    handle_openai_errors,
                     handle_file_errors)
 
 
@@ -16,7 +16,7 @@ def generate_image(client, model, quality) -> None:
     of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number
     of images, otherwise it will be 1 image.
     """
-    
+
     image_prompt = colored("Image Description: ", "light_blue", attrs=["bold"])
     assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
     try:
@@ -26,15 +26,13 @@ def generate_image(client, model, quality) -> None:
             response = client.images.generate(
                 model=model,
                 prompt=prompt,
-                n=n,
-            )
+                n=n,)
         else:
             response = client.images.generate(
                 model=model,
                 prompt=prompt,
                 quality=quality,
-                n=1
-            )
+                n=1)
         image_url = response.data[0].url
         print(f"{assistant_prompt} {image_url}")
         pyperclip.copy(image_url)
@@ -77,29 +75,16 @@ def describe_image(api_key, model, max_tokens) -> None:
         return
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+        "Authorization": f"Bearer {api_key}"}
     payload = {
         "model": model,
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": "What's in this image?"
-                    },
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/png;base64,{base64_image}"
-                        }
-                    }
-                ]
-            }
-        ],
-        "max_tokens": max_tokens
-    }
+        "messages": [{
+            "role": "user",
+            "content": [{"type": "text",
+                         "text": "What's in this image?"},
+                        {"type": "image_url",
+                         "image_url": {
+                                 "url": f"data:image/png;base64,{base64_image}"}}]}], "max_tokens": max_tokens}
     try:
         response = requests.post(
             "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)

@@ -1,24 +1,29 @@
+import subprocess
 from termcolor import colored
 
 
 def print_menu() -> None:
     """Prints the Main Menu"""
 
-    print("\n")
-    print(f"AI Assistant (J. Hall, 2023-2024)\n")
-    print(" 1 = 3.5 Chat")
-    print(" 2 = 4.0 Chat")
-    print(" 3 = 3.5 Tutor")
-    print(" 4 = 4.0 Tutor")
-    print(" 5 = Code Reviewer")
-    print(" 6 = Image Generator")
-    print(" 7 = Vision")
-    print(" 8 = Speech-to-Text")
-    print(" 9 = Text-to-Speech")
-    print("10 = List GPT Models")
-    print("11 = List All Models")
-    print("12 = List Current Settings")
-    print("13 = Quit")
+    menu = """
+AI Assistant (J. Hall, 2023-2024)
+
+ 1 = 3.5 Chat
+ 2 = 4.0 Chat
+ 3 = 3.5 Tutor
+ 4 = 4.0 Tutor
+ 5 = Code Reviewer
+ 6 = Image Generator
+ 7 = Vision
+ 8 = Speech-to-Text
+ 9 = Text-to-Speech
+10 = List GPT Models
+11 = List All Models
+12 = List Current Settings
+13 = Update API packages
+ Q = Quit
+"""
+    print(menu)
 
 
 def not_numeric() -> None:
@@ -70,3 +75,34 @@ def list_settings(config) -> None:
     print(colored("MAX_TOKENS: \t\t", "blue",
           attrs=["bold"]), config.MAX_TOKENS)
     input("\nHit Enter to continue . . .")
+
+
+def update() -> None:
+    """Updates the 'openai' package"""
+
+    package = "openai"
+    original_version = check_package_version(package)
+    subprocess.check_call(["pip", "install", "--upgrade",
+                          "openai"], stdout=subprocess.DEVNULL)
+    updated_version = check_package_version(package)
+    if original_version == "error" or updated_version == "error":
+        return
+    if original_version != updated_version:
+        print(f"\nOpenAI has been updated to version {updated_version}\n")
+    else:
+        print(f"\nYou already have the latest version ({original_version})\n")
+    input("Hit <Enter> to continue . . .")
+
+
+def check_package_version(package_name) -> (str | None):
+    """Returns the version number of a python package"""
+
+    try:
+        result = subprocess.check_output(
+            ["pip", "show", package_name], stderr=subprocess.DEVNULL).decode("utf-8")
+        for line in result.split('\n'):
+            if line.startswith('Version:'):
+                return line.split(': ')[1]
+    except subprocess.CalledProcessError:
+        print(f"\n{package_name} package not found\n")
+        return "error"

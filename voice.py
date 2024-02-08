@@ -10,11 +10,12 @@ from errors import handle_file_errors, handle_openai_errors
 
 def speech_to_text(client, model) -> None:
     """
-    Transcribes a voice file to text
-
-    This will take an audio file and create and transcribe a text file from the
-    audio source. The transcription will appear as a text response from the assistant.
-    It will be copied to the clipboard.
+    Transcribes a voice file to text. This will take an audio file and create
+    and transcribe a text file from the audio source. The transcription will
+    appear as a text response from the assistant. It will also be copied to the clipboard.
+    @param:
+    - client: The OpenAI client instance.
+    - model: The model used for generating responses (e.g., 'gpt-3.5-turbo'). 
     """
 
     user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
@@ -33,8 +34,7 @@ def speech_to_text(client, model) -> None:
             content = client.audio.transcriptions.create(
                 model=model,
                 file=audio_file,
-                response_format="text"
-            )
+                response_format="text")
             print(f"{assistant_prompt} {content}")
             pyperclip.copy(content)
     except (PermissionError, OSError, FileNotFoundError) as e:
@@ -47,10 +47,12 @@ def speech_to_text(client, model) -> None:
 
 def text_to_speech(client, model, voice) -> None:
     """
-    Text to speech
-
-    This will take text from a user prompt and create an audio file using a specified voice
+    Text to speech. This will take text from a user prompt and create an audio file using a specified voice
     (TTS_VOICE). The new file will default to 'speech.mp3' and will be saved to the Desktop.
+    @param:
+    - client: The OpenAI client instance.
+    - model: The model used for generating responses (e.g., 'gpt-3.5-turbo'). 
+    - voice: The voice model used (e.g. 'alloy')
     """
 
     text_prompt = colored("Enter the text: ", "light_blue", attrs=["bold"])
@@ -61,12 +63,10 @@ def text_to_speech(client, model, voice) -> None:
         response = client.audio.speech.create(
             model=model,
             voice=voice,
-            input=user_input
-        )
+            input=user_input)
         response.stream_to_file(speech_file_path)
         print(
-            f"{assistant_prompt} 'speech.mp3' succesfully created, Check your Desktop\n"
-        )
+            f"{assistant_prompt} 'speech.mp3' succesfully created, Check your Desktop\n")
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
         print(f"{assistant_prompt} {content}")

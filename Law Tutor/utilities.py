@@ -1,22 +1,25 @@
+import subprocess
 from termcolor import colored
 
 
 def print_menu():
-    '''
-    Prints the main menu
-    '''
-    print("\n")
-    print("AI Assistant (J. Hall, 2024)")
-    print("---------------------------------")
-    print(" 1 = 4.0 Law Tutor")
-    print(" 2 = 3.5 Law Tutor")
-    print(" 3 = 4.0 Chat")
-    print(" 4 = 3.5 Chat")
-    print(" 5 = Image Generator")
-    print(" 6 = Speech-to-Text")
-    print(" 7 = Text-to-Speech")
-    print(" 8 = List Current Settings")
-    print(" 9 = Quit")
+    """Prints the main menu"""
+
+    menu = """
+AI Assistant (J. Hall, 2024)
+
+1 = 4.0 Law Tutor
+2 = 3.5 Law Tutor
+3 = 4.0 Chat
+4 = 3.5 Chat
+5 = Image Generator
+6 = Speech-to-Text
+7 = Text-to-Speech
+8 = List Current Settings
+9 = Update API
+Q = Quit
+ """
+    print(menu)
 
 
 def not_numeric() -> None:
@@ -43,3 +46,34 @@ def list_settings(config) -> None:
           attrs=["bold"]), config.FREQ_PENALTY)
     print(colored("MAX_TOKENS: \t", "blue", attrs=["bold"]), config.MAX_TOKENS)
     input("\nHit Enter to continue . . .")
+
+
+def update() -> None:
+    """Updates the 'openai' package"""
+
+    package = "openai"
+    original_version = check_package_version(package)
+    subprocess.check_call(["pip", "install", "--upgrade",
+                          "openai"], stdout=subprocess.DEVNULL)
+    updated_version = check_package_version(package)
+    if original_version == "error" or updated_version == "error":
+        return
+    if original_version != updated_version:
+        print(f"\nOpenAI updated to version {updated_version}\n")
+    else:
+        print(f"\nOpenAI is already up to date ({original_version})\n")
+    input("Hit <Enter> to continue . . .")
+
+
+def check_package_version(package_name):
+    """Returns the version number of a python package"""
+
+    try:
+        result = subprocess.check_output(
+            ["pip", "show", package_name], stderr=subprocess.DEVNULL).decode("utf-8")
+        for line in result.split("\n"):
+            if line.startswith("Version:"):
+                return line.split(": ")[1]
+    except subprocess.CalledProcessError:
+        print(f"\n{package_name} package not found\n")
+        return "error"

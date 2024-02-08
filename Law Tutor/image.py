@@ -26,15 +26,13 @@ def generate_image(client, model, quality) -> None:
             response = client.images.generate(
                 model=model,
                 prompt=prompt,
-                n=n,
-            )
+                n=n,)
         else:
             response = client.images.generate(
                 model=model,
                 prompt=prompt,
                 quality=quality,
-                n=1
-            )
+                n=1)
         image_url = response.data[0].url
         print(f"{assistant_prompt} {image_url}")
         pyperclip.copy(image_url)

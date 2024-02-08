@@ -5,7 +5,7 @@ from config import Config
 from image import generate_image
 from voice import text_to_speech, speech_to_text
 from utilities import (print_menu, not_numeric,
-                       list_settings)
+                       list_settings, update)
 
 
 def main():
@@ -13,11 +13,15 @@ def main():
     client = OpenAI()
     while True:
         print_menu()
-        try:
-            choice = int(input("\nEnter Choice: "))
-        except ValueError:
-            not_numeric()
-            continue
+        choice = input("Enter Choice: ")
+        if choice == "q" or choice == "Q":
+            choice = config.STOP
+        else:
+            try:
+                choice = int(choice)
+            except ValueError:
+                not_numeric()
+                continue
         if choice == 1:
             chat(client, config.GPT4_MODEL,
                  config.TUTOR_TEMP, config.FREQ_PENALTY, 0)
@@ -39,11 +43,12 @@ def main():
         elif choice == 8:
             list_settings(config)
         elif choice == 9:
+            update()
+        elif choice == 10:
             exit()
         else:
             input(
-                f"\nPlease Make a Choice Between 1 and {config.STOP}\n Press <Enter> to return to Main Menu ... "
-            )
+                f"\nPlease Make a Choice Between 1 and {config.STOP}\n Press <Enter> to return to Main Menu ... ")
 
 
 if __name__ == "__main__":

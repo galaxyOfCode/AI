@@ -35,17 +35,14 @@ def code_review(client, model) -> None:
                               "its style, performance, readability, and maintainability.  "
                               "If there are any reputable libraries that could be introduced "
                               "to improve the code, suggest them.  Be kind and constructive.  "
-                              "For each suggested change, include line numbers to which you are "
-                              "referring.")
+                              "For each suggested change, include line numbers to which you are referring.")
             messages = [
                 {"role": "system", "content": initial_prompt},
-                {"role": "user", "content": f"Code review the following file: {file_content}"}
-            ]
+                {"role": "user", "content": f"Code review the following file: {file_content}"}]
         try:
             response = client.chat.completions.create(
                 model=model,
-                messages=messages
-            )
+                messages=messages)
             content = response.choices[0].message.content
         except (openai.APIConnectionError, openai.RateLimitError,
                 openai.APIStatusError) as e:
