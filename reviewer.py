@@ -48,6 +48,8 @@ def code_review(client, model) -> None:
                 openai.APIStatusError) as e:
             content = handle_openai_errors(e)
             print(f"{assistant_prompt} {content}")
+        except Exception as e:
+            print(f"{assistant_prompt} Something went wrong: {e}")
 
         print(f"{assistant_prompt} {content}")
         pyperclip.copy(content)
@@ -56,3 +58,5 @@ def code_review(client, model) -> None:
     except (PermissionError, OSError, FileNotFoundError) as e:
         content = handle_file_errors(e)
         print(f"{assistant_prompt} {content}")
+    except Exception as e:
+        print(f"{assistant_prompt} Something went wrong: {e}")

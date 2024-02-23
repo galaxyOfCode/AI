@@ -43,6 +43,8 @@ def speech_to_text(client, model) -> None:
         return
     except KeyboardInterrupt:
         print("Exiting...")
+    except Exception as e:
+        print(f"{assistant_prompt} Something went wrong: {e}")
 
 
 def text_to_speech(client, model, voice) -> None:
@@ -73,3 +75,5 @@ def text_to_speech(client, model, voice) -> None:
         return
     except KeyboardInterrupt:
         print("Exiting...")
+    except Exception as e:
+        print(f"{assistant_prompt} Something went wrong: {e}")

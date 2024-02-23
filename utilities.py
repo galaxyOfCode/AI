@@ -13,7 +13,7 @@ AI Assistant (J. Hall, 2023-2024)
  3 = 3.5 Tutor
  4 = 4.0 Tutor
  5 = Code Reviewer
- 6 = Image Generator
+ 6 = Image Generation
  7 = Vision
  8 = Speech-to-Text
  9 = Text-to-Speech
@@ -29,7 +29,7 @@ AI Assistant (J. Hall, 2023-2024)
 def not_numeric() -> None:
     """Error message if menu choice is not numeric"""
 
-    input("\nYou Entered a non-numeric value or wrong format.\nPress <Enter> to continue ... ")
+    input("\nYou Entered a non-numeric value or wrong format.\nHit <Enter> to continue...")
 
 
 def list_models(client, option) -> None:
@@ -46,7 +46,7 @@ def list_models(client, option) -> None:
         print("Current openAI Models:\n")
     model_ids.sort()
     print("\n".join(model_ids))
-    input("\nHit Enter to continue . . .")
+    input("\nHit <Enter> to continue...")
 
 
 def list_settings(config) -> None:
@@ -74,7 +74,7 @@ def list_settings(config) -> None:
           attrs=["bold"]), config.FREQ_PENALTY)
     print(colored("MAX_TOKENS: \t\t", "blue",
           attrs=["bold"]), config.MAX_TOKENS)
-    input("\nHit Enter to continue . . .")
+    input("\nHit <Enter> to continue...")
 
 
 def update() -> None:
@@ -91,7 +91,7 @@ def update() -> None:
         print(f"\nOpenAI has been updated to version {updated_version}\n")
     else:
         print(f"\nYou already have the latest version ({original_version})\n")
-    input("Hit <Enter> to continue . . .")
+    input("Hit <Enter> to continue...")
 
 
 def check_package_version(package_name) -> (str | None):
@@ -106,3 +106,5 @@ def check_package_version(package_name) -> (str | None):
     except subprocess.CalledProcessError:
         print(f"\n{package_name} package not found\n")
         return "error"
+    except Exception as e:
+        print(f"Something went wrong: {e}")

@@ -52,3 +52,5 @@ def chat(client, model, temperature, frequency_penalty, option) -> None:
     except KeyboardInterrupt:
         print("Exiting...")
         return
+    except Exception as e:
+        print(f"{assistant_prompt} Something went wrong: {e}")

@@ -3,10 +3,10 @@ from openai import OpenAI
 from chat import chat
 from reviewer import code_review
 from config import Config
-from image import describe_image, generate_image
+from image import (describe_image, generate_image)
 from voice import text_to_speech, speech_to_text
 from utilities import (print_menu, not_numeric,
-                       list_models, list_settings, 
+                       list_models, list_settings,
                        update)
 
 
@@ -59,7 +59,7 @@ def main():
             exit()
         else:
             input(
-                f"\nPlease Make a Choice Between 1 and {config.STOP}\n Press <Enter> to return to Main Menu ... "
+                f"\nPlease Make a Choice Between 1 and {config.MENU_MAX}\n Hit <Enter> to return to Main Menu..."
             )
 
 

@@ -25,7 +25,7 @@ Q = Quit
 def not_numeric() -> None:
     """Error message if menu choice is not numeric"""
 
-    input("\nYou Entered a non-numeric value or wrong format.\nPress <Enter> to continue ... ")
+    input("\nYou Entered a non-numeric value or wrong format.\nHit <Enter> to continue...")
 
 
 def list_settings(config) -> None:
@@ -45,7 +45,7 @@ def list_settings(config) -> None:
     print(colored("FREQ_PENALTY: \t", "blue",
           attrs=["bold"]), config.FREQ_PENALTY)
     print(colored("MAX_TOKENS: \t", "blue", attrs=["bold"]), config.MAX_TOKENS)
-    input("\nHit Enter to continue . . .")
+    input("\nHit <Enter> to continue...")
 
 
 def update() -> None:
@@ -62,7 +62,7 @@ def update() -> None:
         print(f"\nOpenAI updated to version {updated_version}\n")
     else:
         print(f"\nOpenAI is already up to date ({original_version})\n")
-    input("Hit <Enter> to continue . . .")
+    input("Hit <Enter> to continue...")
 
 
 def check_package_version(package_name):

@@ -1,5 +1,10 @@
+
+import base64
 import openai
+import os
 import pyperclip
+import requests
+from requests.exceptions import HTTPError, Timeout, RequestException
 from termcolor import colored
 import tkinter as tk
 from tkinter import filedialog
@@ -50,10 +55,6 @@ def generate_image(client, model, quality) -> None:
 
 def describe_image(api_key, model, max_tokens) -> None:
     """The user can select an image and ask for a description"""
-
-    import requests
-    import base64
-    from requests.exceptions import HTTPError, Timeout, RequestException
 
     user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
     assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])

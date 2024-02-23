@@ -48,7 +48,7 @@ def main():
             exit()
         else:
             input(
-                f"\nPlease Make a Choice Between 1 and {config.STOP}\n Press <Enter> to return to Main Menu ... ")
+                f"\nPlease Make a Choice Between 1 and {config.STOP}\nHit <Enter> to return to Main Menu..")
 
 
 if __name__ == "__main__":
