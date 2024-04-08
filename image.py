@@ -56,14 +56,16 @@ def generate_image(client, model, quality) -> None:
 def describe_image(api_key, model, max_tokens) -> None:
     """The user can select an image and ask for a description"""
 
-    user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
+    user_prompt = colored("You: ", "light_blue", attrs=["bold"])
+    file_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
     assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
+    prompt = input(user_prompt)
     root = tk.Tk()
     root.withdraw()
-    print(user_prompt)
+    print(file_prompt)
     image_path = filedialog.askopenfilename(title="Select a File")
     if image_path:
-        print(f"Selected file: {image_path}")
+        print("Working...")
     else:
         print("No file selected or dialog canceled.\n")
         return
@@ -82,7 +84,7 @@ def describe_image(api_key, model, max_tokens) -> None:
         "messages": [{
             "role": "user",
             "content": [{"type": "text",
-                         "text": "What's in this image?"},
+                         "text": prompt},
                         {"type": "image_url",
                          "image_url": {
                                  "url": f"data:image/png;base64,{base64_image}"}}]}], "max_tokens": max_tokens}

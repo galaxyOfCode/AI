@@ -88,9 +88,10 @@ def update() -> None:
     if original_version == "error" or updated_version == "error":
         return
     if original_version != updated_version:
-        print(f"\nOpenAI has been updated to version {updated_version}\n")
+        print(f"\n{package} has been updated to version {updated_version}\n")
     else:
-        print(f"\nYou already have the latest version ({original_version})\n")
+        print(
+            f"\nYou already have the latest version of {package} - ({original_version})\n")
     input("Hit <Enter> to continue...")
 
 
