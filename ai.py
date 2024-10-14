@@ -25,37 +25,34 @@ def main():
                 not_numeric()
                 continue
         if choice == 1:
-            chat(client, config.GPT3_MODEL,
+            chat(client, config.FASTER_MODEL,
                  config.CHAT_TEMP, config.FREQ_PENALTY, 1)
         elif choice == 2:
-            chat(client, config.GPT4_MODEL,
+            chat(client, config.BETTER_MODEL,
                  config.CHAT_TEMP, config.FREQ_PENALTY, 1)
         elif choice == 3:
-            chat(client, config.GPT3_MODEL,
+            chat(client, config.TUTOR_MODEL,
                  config.TUTOR_TEMP, config.FREQ_PENALTY, 0)
         elif choice == 4:
-            chat(client, config.GPT4_MODEL,
-                 config.TUTOR_TEMP, config.FREQ_PENALTY, 0)
+            code_review(client, config.BETTER_MODEL)
         elif choice == 5:
-            code_review(client, config.GPT4_MODEL)
-        elif choice == 6:
             generate_image(client, config.IMG_MODEL, config.QUALITY)
-        elif choice == 7:
+        elif choice == 6:
             describe_image(config.api_key, config.VISION_MODEL,
                            config.MAX_TOKENS)
-        elif choice == 8:
+        elif choice == 7:
             speech_to_text(client, config.WHISPER_MODEL)
-        elif choice == 9:
+        elif choice == 8:
             text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE)
-        elif choice == 10:
+        elif choice == 9:
             list_models(client, 0)
-        elif choice == 11:
+        elif choice == 10:
             list_models(client, 1)
-        elif choice == 12:
+        elif choice == 11:
             list_settings(config)
-        elif choice == 13:
+        elif choice == 12:
             update()
-        elif choice == 14:
+        elif choice == 13:
             exit()
         else:
             input(

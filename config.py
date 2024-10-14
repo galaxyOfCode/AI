@@ -7,10 +7,11 @@ class Config:
         self.cfg = ConfigParser()
         self.cfg.read(config_file)
 
-        self.MENU_MAX = 14
+        self.MENU_MAX = 13
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
-        self.GPT3_MODEL = self.cfg["OPENAI"]["GPT3_MODEL"]
-        self.GPT4_MODEL = self.cfg["OPENAI"]["GPT4_MODEL"]
+        self.FASTER_MODEL = self.cfg["OPENAI"]["FASTER_MODEL"]
+        self.BETTER_MODEL = self.cfg["OPENAI"]["BETTER_MODEL"]
+        self.TUTOR_MODEL = self.cfg["OPENAI"]["TUTOR_MODEL"]
         self.FREQ_PENALTY = self.cfg.getfloat("OPENAI", "FREQ_PENALTY")
         self.CHAT_TEMP = self.cfg.getfloat("OPENAI", "CHAT_TEMP")
         self.TUTOR_TEMP = self.cfg.getfloat("OPENAI", "TUTOR_TEMP")

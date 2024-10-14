@@ -8,19 +8,18 @@ def print_menu() -> None:
     menu = """
 AI Assistant (J. Hall, 2023-2024)
 
- 1 = 3.5 Chat
- 2 = 4.0 Chat
- 3 = 3.5 Tutor
- 4 = 4.0 Tutor
- 5 = Code Reviewer
- 6 = Image Generation
- 7 = Vision
- 8 = Speech-to-Text
- 9 = Text-to-Speech
-10 = List GPT Models
-11 = List All Models
-12 = List Current Settings
-13 = Update API packages
+ 1 = Faster Chat
+ 2 = Better Chat
+ 3 = Law Tutor
+ 4 = Code Reviewer
+ 5 = Image Generation
+ 6 = Vision
+ 7 = Speech-to-Text
+ 8 = Text-to-Speech
+ 9 = List GPT Models
+10 = List All Models
+11 = List Current Settings
+12 = Update API packages
  Q = Quit
 """
     print(menu)
@@ -53,23 +52,30 @@ def list_settings(config) -> None:
     """Prints off the hardcoded "Magic Numbers" """
 
     print("\nCurrent Settings:\n")
-    print(colored("GPT3_MODEL: \t\t", "blue",
-          attrs=["bold"]), config.GPT3_MODEL)
-    print(colored("GPT4_MODEL: \t\t", "blue",
-          attrs=["bold"]), config.GPT4_MODEL)
+    print(colored("FASTER_MODEL: \t\t", "blue",
+          attrs=["bold"]), config.FASTER_MODEL)
+    print(colored("BETTER_MODEL: \t\t", "blue",
+          attrs=["bold"]), config.BETTER_MODEL)
+    print(colored("TUTOR_MODEL: \t\t", "blue", 
+                  attrs=["bold"]), config.TUTOR_MODEL)
     print(colored("CODE_REVIEW_MODEL: \t", "blue",
-          attrs=["bold"]), config.GPT4_MODEL)
-    print(colored("IMG_MODEL: \t\t", "blue", attrs=["bold"]), config.IMG_MODEL)
-    print(colored("QUALITY: \t\t", "blue", attrs=["bold"]), config.QUALITY)
+          attrs=["bold"]), config.BETTER_MODEL)
+    print(colored("IMG_MODEL: \t\t", "blue", 
+                  attrs=["bold"]), config.IMG_MODEL)
+    print(colored("QUALITY: \t\t", "blue", 
+                  attrs=["bold"]), config.QUALITY)
     print(colored("VISION_MODEL:\t\t", "blue",
           attrs=["bold"]), config.VISION_MODEL)
     print(colored("WHISPER_MODEL: \t\t", "blue",
           attrs=["bold"]), config.WHISPER_MODEL)
-    print(colored("TTS_MODEL: \t\t", "blue", attrs=["bold"]), config.TTS_MODEL)
-    print(colored("TTS_VOICE: \t\t", "blue", attrs=["bold"]), config.TTS_VOICE)
+    print(colored("TTS_MODEL: \t\t", "blue", 
+                  attrs=["bold"]), config.TTS_MODEL)
+    print(colored("TTS_VOICE: \t\t", "blue", 
+                  attrs=["bold"]), config.TTS_VOICE)
     print(colored("TUTOR_TEMP: \t\t", "blue",
           attrs=["bold"]), config.TUTOR_TEMP)
-    print(colored("CHAT_TEMP: \t\t", "blue", attrs=["bold"]), config.CHAT_TEMP)
+    print(colored("CHAT_TEMP: \t\t", "blue", 
+                  attrs=["bold"]), config.CHAT_TEMP)
     print(colored("FREQ_PENALTY: \t\t", "blue",
           attrs=["bold"]), config.FREQ_PENALTY)
     print(colored("MAX_TOKENS: \t\t", "blue",
