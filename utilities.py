@@ -10,7 +10,7 @@ AI Assistant (J. Hall, 2023-2024)
 
  1 = Faster Chat
  2 = Better Chat
- 3 = Law Tutor
+ 3 = Legal Assistant
  4 = Code Reviewer
  5 = Image Generation
  6 = Vision
