@@ -1,5 +1,6 @@
+from rich import print
+from rich.table import Table
 import subprocess
-from termcolor import colored
 
 
 def print_menu() -> None:
@@ -51,35 +52,60 @@ def list_models(client, option) -> None:
 def list_settings(config) -> None:
     """Prints off the hardcoded "Magic Numbers" """
 
-    print("\nCurrent Settings:\n")
-    print(colored("FASTER_MODEL: \t\t", "blue",
-          attrs=["bold"]), config.FASTER_MODEL)
-    print(colored("BETTER_MODEL: \t\t", "blue",
-          attrs=["bold"]), config.BETTER_MODEL)
-    print(colored("TUTOR_MODEL: \t\t", "blue", 
-                  attrs=["bold"]), config.TUTOR_MODEL)
-    print(colored("CODE_REVIEW_MODEL: \t", "blue",
-          attrs=["bold"]), config.BETTER_MODEL)
-    print(colored("IMG_MODEL: \t\t", "blue", 
-                  attrs=["bold"]), config.IMG_MODEL)
-    print(colored("QUALITY: \t\t", "blue", 
-                  attrs=["bold"]), config.QUALITY)
-    print(colored("VISION_MODEL:\t\t", "blue",
-          attrs=["bold"]), config.VISION_MODEL)
-    print(colored("WHISPER_MODEL: \t\t", "blue",
-          attrs=["bold"]), config.WHISPER_MODEL)
-    print(colored("TTS_MODEL: \t\t", "blue", 
-                  attrs=["bold"]), config.TTS_MODEL)
-    print(colored("TTS_VOICE: \t\t", "blue", 
-                  attrs=["bold"]), config.TTS_VOICE)
-    print(colored("TUTOR_TEMP: \t\t", "blue",
-          attrs=["bold"]), config.TUTOR_TEMP)
-    print(colored("CHAT_TEMP: \t\t", "blue", 
-                  attrs=["bold"]), config.CHAT_TEMP)
-    print(colored("FREQ_PENALTY: \t\t", "blue",
-          attrs=["bold"]), config.FREQ_PENALTY)
-    print(colored("MAX_TOKENS: \t\t", "blue",
-          attrs=["bold"]), config.MAX_TOKENS)
+    table = Table(title="Current Settings", show_header=True, header_style="bold blue")
+    
+    # Add columns
+    table.add_column("Setting", style="cyan", no_wrap=True)
+    table.add_column("Value", style="magenta")
+
+    # Add rows with settings and their corresponding values
+    table.add_row("FASTER_MODEL", str(config.FASTER_MODEL))
+    table.add_row("BETTER_MODEL", str(config.BETTER_MODEL))
+    table.add_row("TUTOR_MODEL", str(config.TUTOR_MODEL))
+    table.add_row("CODE_REVIEW_MODEL", str(config.BETTER_MODEL))
+    table.add_row("IMG_MODEL", str(config.IMG_MODEL))
+    table.add_row("QUALITY", str(config.QUALITY))
+    table.add_row("VISION_MODEL", str(config.VISION_MODEL))
+    table.add_row("WHISPER_MODEL", str(config.WHISPER_MODEL))
+    table.add_row("TTS_MODEL", str(config.TTS_MODEL))
+    table.add_row("TTS_VOICE", str(config.TTS_VOICE))
+    table.add_row("TUTOR_TEMP", str(config.TUTOR_TEMP))
+    table.add_row("CHAT_TEMP", str(config.CHAT_TEMP))
+    table.add_row("FREQ_PENALTY", str(config.FREQ_PENALTY))
+    table.add_row("MAX_TOKENS", str(config.MAX_TOKENS))
+
+    # Print the table
+    print(table)
+
+    # print("\nCurrent Settings:\n")
+    # print(colored("FASTER_MODEL: \t\t", "blue",
+    #       attrs=["bold"]), config.FASTER_MODEL)
+    # print(colored("BETTER_MODEL: \t\t", "blue",
+    #       attrs=["bold"]), config.BETTER_MODEL)
+    # print(colored("TUTOR_MODEL: \t\t", "blue", 
+    #               attrs=["bold"]), config.TUTOR_MODEL)
+    # print(colored("CODE_REVIEW_MODEL: \t", "blue",
+    #       attrs=["bold"]), config.BETTER_MODEL)
+    # print(colored("IMG_MODEL: \t\t", "blue", 
+    #               attrs=["bold"]), config.IMG_MODEL)
+    # print(colored("QUALITY: \t\t", "blue", 
+    #               attrs=["bold"]), config.QUALITY)
+    # print(colored("VISION_MODEL:\t\t", "blue",
+    #       attrs=["bold"]), config.VISION_MODEL)
+    # print(colored("WHISPER_MODEL: \t\t", "blue",
+    #       attrs=["bold"]), config.WHISPER_MODEL)
+    # print(colored("TTS_MODEL: \t\t", "blue", 
+    #               attrs=["bold"]), config.TTS_MODEL)
+    # print(colored("TTS_VOICE: \t\t", "blue", 
+    #               attrs=["bold"]), config.TTS_VOICE)
+    # print(colored("TUTOR_TEMP: \t\t", "blue",
+    #       attrs=["bold"]), config.TUTOR_TEMP)
+    # print(colored("CHAT_TEMP: \t\t", "blue", 
+    #               attrs=["bold"]), config.CHAT_TEMP)
+    # print(colored("FREQ_PENALTY: \t\t", "blue",
+    #       attrs=["bold"]), config.FREQ_PENALTY)
+    # print(colored("MAX_TOKENS: \t\t", "blue",
+    #       attrs=["bold"]), config.MAX_TOKENS)
     input("\nHit <Enter> to continue...")
 
 

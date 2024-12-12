@@ -1,7 +1,5 @@
-
 import base64
 import openai
-import os
 import pyperclip
 import requests
 from requests.exceptions import HTTPError, Timeout, RequestException
