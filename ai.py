@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 from chat import chat
-from reviewer import code_review
+from reviewer import doc_review
 from config import Config
 from image import (describe_image, generate_image)
 from voice import text_to_speech, speech_to_text
@@ -34,7 +34,7 @@ def main():
             chat(client, config.TUTOR_MODEL,
                  config.TUTOR_TEMP, config.FREQ_PENALTY, 0)
         elif choice == 4:
-            code_review(client, config.BETTER_MODEL)
+            doc_review(client, config.BETTER_MODEL)
         elif choice == 5:
             generate_image(client, config.IMG_MODEL, config.QUALITY)
         elif choice == 6:

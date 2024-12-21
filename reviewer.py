@@ -1,62 +1,105 @@
 import openai
+import os
 import pyperclip
 from termcolor import colored
 import tkinter as tk
 from tkinter import filedialog
 
 from errors import handle_openai_errors, handle_file_errors
+from PyPDF2 import PdfReader
 
 
-def code_review(client, model) -> None:
+def extract_text_from_file(file_path):
     """
-    Reviews a code file.
-
-    Allows the user to select a file for openAI to review the code for
-    style, performance, readability, and maintainability.  
+    Extracts text from a file. Supports both text files and PDFs.
     """
+    _, ext = os.path.splitext(file_path)  # Get file extension
+    ext = ext.lower()
 
-    user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
+    if ext == ".txt":
+        with open(file_path, "r") as file:
+            return file.read()
+    elif ext == ".pdf":
+        try:
+            reader = PdfReader(file_path)
+            text = ""
+            for page in reader.pages:
+                text += page.extract_text()
+            return text
+        except Exception as e:
+            raise ValueError(f"Error reading PDF file: {e}")
+    else:
+        raise ValueError("Unsupported file type. Please select a .txt or .pdf file.")
+
+def doc_review(client, model) -> None:
+    """
+    Reviews a document (text file or PDF).
+
+    Allows the user to select a file and ask a question about its contents.
+    """
+    def colored_prompt(text, color):
+        return f"\033[{color}m{text}\033[0m"
+
+    file_prompt = colored("Select a File: ", "light_green", attrs=["bold"])
+    user_prompt = colored("You: ", "light_blue", attrs=["bold"])
     assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
+
     root = tk.Tk()
     root.withdraw()
-    print(user_prompt)
+
+    print(file_prompt)
     try:
-        file_path = filedialog.askopenfilename(title="Select a File")
-        if file_path:
-            print(f"Selected file: {file_path}")
-            print("Processing...")
-        else:
+        # File selection dialog
+        file_path = filedialog.askopenfilename(
+            title="Select a File",
+            filetypes=[("Text files", "*.txt"), ("PDF files", "*.pdf")]
+        )
+        if not file_path:
             print("No file selected")
             return
-        with open(file_path, "r") as file:
-            file_content = file.read()
-            initial_prompt = ("You will receive a file's contents as text. Generate a code review "
-                              "for the file.  Indicate what changes should be made to improve "
-                              "its style, performance, readability, and maintainability.  "
-                              "If there are any reputable libraries that could be introduced "
-                              "to improve the code, suggest them.  Be kind and constructive.  "
-                              "For each suggested change, include line numbers to which you are referring.")
-            messages = [
-                {"role": "system", "content": initial_prompt},
-                {"role": "user", "content": f"Code review the following file: {file_content}"}]
+
+        # User input
+        user_input = input(user_prompt)
+
+        # Extract text content
         try:
+            file_content = extract_text_from_file(file_path)
+        except ValueError as e:
+            print(f"{assistant_prompt} {e}")
+            return
+
+        # Prepare initial prompt and messages
+        initial_prompt = (
+            "You will receive a document. Please review the document and provide "
+            "answers to the user's prompt based on the contents of the document. "
+            "If it will help the user, please provide references to page numbers."
+        )
+        messages = [
+            {"role": "system", "content": initial_prompt},
+            {"role": "user", "content": f"{user_input}\n\nDocument Content:\n{file_content}"}
+        ]
+
+        try:
+            # Call OpenAI API
             response = client.chat.completions.create(
                 model=model,
-                messages=messages)
+                messages=messages
+            )
             content = response.choices[0].message.content
-        except (openai.APIConnectionError, openai.RateLimitError,
-                openai.APIStatusError) as e:
+        except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
             content = handle_openai_errors(e)
             print(f"{assistant_prompt} {content}")
-        except Exception as e:
-            print(f"{assistant_prompt} Something went wrong: {e}")
+            return
 
+        # Output response
         print(f"{assistant_prompt} {content}")
         pyperclip.copy(content)
-        root.destroy()
-        return
+        
     except (PermissionError, OSError, FileNotFoundError) as e:
         content = handle_file_errors(e)
-        print(f"{assistant_prompt} {content}")
+        print(content)
+        return
     except Exception as e:
-        print(f"{assistant_prompt} Something went wrong: {e}")
+        print(f"{assistant_prompt} An unexpected error occurred: {e}")
+    finally:
+        root.destroy()
