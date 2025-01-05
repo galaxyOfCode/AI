@@ -11,10 +11,10 @@ class Config:
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
         self.FASTER_MODEL = self.cfg["OPENAI"]["FASTER_MODEL"]
         self.BETTER_MODEL = self.cfg["OPENAI"]["BETTER_MODEL"]
-        self.TUTOR_MODEL = self.cfg["OPENAI"]["TUTOR_MODEL"]
+        self.ASST_MODEL = self.cfg["OPENAI"]["ASST_MODEL"]
         self.FREQ_PENALTY = self.cfg.getfloat("OPENAI", "FREQ_PENALTY")
         self.CHAT_TEMP = self.cfg.getfloat("OPENAI", "CHAT_TEMP")
-        self.TUTOR_TEMP = self.cfg.getfloat("OPENAI", "TUTOR_TEMP")
+        self.ASST_TEMP = self.cfg.getfloat("OPENAI", "ASST_TEMP")
         self.IMG_MODEL = self.cfg["OPENAI"]["IMG_MODEL"]
         self.QUALITY = self.cfg["OPENAI"]["QUALITY"]
         self.VISION_MODEL = self.cfg["OPENAI"]["VISION_MODEL"]

@@ -31,8 +31,8 @@ def main():
             chat(client, config.BETTER_MODEL,
                  config.CHAT_TEMP, config.FREQ_PENALTY, 1)
         elif choice == 3:
-            chat(client, config.TUTOR_MODEL,
-                 config.TUTOR_TEMP, config.FREQ_PENALTY, 0)
+            chat(client, config.ASST_MODEL,
+                 config.ASST_TEMP, config.FREQ_PENALTY, 0)
         elif choice == 4:
             doc_review(client, config.BETTER_MODEL)
         elif choice == 5:
