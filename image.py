@@ -15,27 +15,18 @@ from errors import (handle_request_errors,
 def generate_image(client, model, quality) -> None:
     """
     This will allow the user to input a prompt and openAI will create an image based
-    on the prompt.  IMG_MODEL is the image model that will be used. SIZE is the size
-    of the image.  If IMG_MODEL is not DALL-E-3, then the user can select the number
-    of images, otherwise it will be 1 image.
+    on the prompt.  MODEL is the image model that will be used. QUALITY is the quality of the image
+    that will be generated (Low, Medium, High).  The image will be copied to the clipboard.
     """
 
     image_prompt = colored("Image Description: ", "light_blue", attrs=["bold"])
     assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
     try:
         prompt = input(image_prompt)
-        if model != "dall-e-3":
-            n = int(input("\nNumber of Images: "))
-            response = client.images.generate(
-                model=model,
-                prompt=prompt,
-                n=n,)
-        else:
-            response = client.images.generate(
-                model=model,
-                prompt=prompt,
-                quality=quality,
-                n=1)
+        response = client.images.generate(
+            model=model,
+            prompt=prompt,
+            quality=quality)
         image_url = response.data[0].url
         print(f"{assistant_prompt} {image_url}")
         pyperclip.copy(image_url)

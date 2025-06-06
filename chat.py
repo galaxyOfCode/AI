@@ -37,6 +37,7 @@ def chat(client, model, temperature, frequency_penalty, option) -> None:
                 frequency_penalty=frequency_penalty)
             content = response.choices[0].message.content
             print(f"{assistant_prompt} {content}")
+            messages.append({"role": "assistant", "content": content})
             pyperclip.copy(content)
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)

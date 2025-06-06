@@ -66,7 +66,7 @@ def text_to_speech(client, model, voice) -> None:
             input=user_input)
         response.stream_to_file(speech_file_path)
         print(
-            f"{assistant_prompt} 'speech.mp3' succesfully created, Check your Desktop\n")
+    f"{assistant_prompt} 'speech.mp3' successfully created, Check your Desktop\n")
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
         print(f"{assistant_prompt} {content}")
