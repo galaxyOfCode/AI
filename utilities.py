@@ -77,35 +77,6 @@ def list_settings(config) -> None:
     # Print the table
     print(table)
 
-    # print("\nCurrent Settings:\n")
-    # print(colored("FASTER_MODEL: \t\t", "blue",
-    #       attrs=["bold"]), config.FASTER_MODEL)
-    # print(colored("BETTER_MODEL: \t\t", "blue",
-    #       attrs=["bold"]), config.BETTER_MODEL)
-    # print(colored("TUTOR_MODEL: \t\t", "blue", 
-    #               attrs=["bold"]), config.TUTOR_MODEL)
-    # print(colored("CODE_REVIEW_MODEL: \t", "blue",
-    #       attrs=["bold"]), config.BETTER_MODEL)
-    # print(colored("IMG_MODEL: \t\t", "blue", 
-    #               attrs=["bold"]), config.IMG_MODEL)
-    # print(colored("QUALITY: \t\t", "blue", 
-    #               attrs=["bold"]), config.QUALITY)
-    # print(colored("VISION_MODEL:\t\t", "blue",
-    #       attrs=["bold"]), config.VISION_MODEL)
-    # print(colored("WHISPER_MODEL: \t\t", "blue",
-    #       attrs=["bold"]), config.WHISPER_MODEL)
-    # print(colored("TTS_MODEL: \t\t", "blue", 
-    #               attrs=["bold"]), config.TTS_MODEL)
-    # print(colored("TTS_VOICE: \t\t", "blue", 
-    #               attrs=["bold"]), config.TTS_VOICE)
-    # print(colored("TUTOR_TEMP: \t\t", "blue",
-    #       attrs=["bold"]), config.TUTOR_TEMP)
-    # print(colored("CHAT_TEMP: \t\t", "blue", 
-    #               attrs=["bold"]), config.CHAT_TEMP)
-    # print(colored("FREQ_PENALTY: \t\t", "blue",
-    #       attrs=["bold"]), config.FREQ_PENALTY)
-    # print(colored("MAX_TOKENS: \t\t", "blue",
-    #       attrs=["bold"]), config.MAX_TOKENS)
     input("\nHit <Enter> to continue...")
 
 
@@ -127,17 +98,27 @@ def update() -> None:
     input("Hit <Enter> to continue...")
 
 
-def check_package_version(package_name) -> (str | None):
-    """Returns the version number of a python package"""
-
+def check_package_version(package_name: str) -> str | None:
+    """
+    Returns the version number of a Python package using pip.
+    Returns:
+        - version string if found
+        - None if package is not found
+        - 'error' string if another exception occurs
+    """
     try:
         result = subprocess.check_output(
-            ["pip", "show", package_name], stderr=subprocess.DEVNULL).decode("utf-8")
-        for line in result.split('\n'):
-            if line.startswith('Version:'):
-                return line.split(': ')[1]
+            ["pip", "show", package_name],
+            stderr=subprocess.DEVNULL,
+            text=True  # automatically decodes output
+        )
+        for line in result.splitlines():
+            if line.startswith("Version:"):
+                return line.split(":", 1)[1].strip()
+        return None  # pip show succeeded, but no version found (very rare)
     except subprocess.CalledProcessError:
-        print(f"\n{package_name} package not found\n")
-        return "error"
+        print(f"\n'{package_name}' package not found.\n")
+        return None
     except Exception as e:
-        print(f"Something went wrong: {e}")
+        print(f"\nUnexpected error while checking '{package_name}': {e}\n")
+        return "error"

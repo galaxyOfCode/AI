@@ -24,6 +24,7 @@ def speech_to_text(client, model) -> None:
     root.withdraw()
     print(user_prompt)
     choice = filedialog.askopenfilename(title="Select a File")
+    root.destroy()
     if choice:
         print(f"Selected file: {choice}")
     else:

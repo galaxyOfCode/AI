@@ -53,6 +53,7 @@ def describe_image(api_key, model, max_tokens) -> None:
     root.withdraw()
     print(file_prompt)
     image_path = filedialog.askopenfilename(title="Select a File")
+    root.destroy()
     if image_path:
         print("Working...")
     else:

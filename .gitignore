@@ -9,3 +9,5 @@ prompts.xlsx
 out
 .idea
 __pycache__
+.venv
+.envrc

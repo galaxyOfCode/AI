@@ -103,3 +103,4 @@ def doc_review(client, model) -> None:
         print(f"{assistant_prompt} An unexpected error occurred: {e}")
     finally:
         root.destroy()
+        
