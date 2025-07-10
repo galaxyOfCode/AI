@@ -7,13 +7,14 @@ from image import (describe_image, generate_image)
 from voice import text_to_speech, speech_to_text
 from utilities import (print_menu, not_numeric,
                        list_models, list_settings,
-                       update)
+                       update, clear_screen)
 
 
 def main():
     config = Config()
     client = OpenAI()
     while True:
+        clear_screen()
         print_menu()
         choice = input("Enter Choice: ")
         if choice == "q" or choice == "Q":

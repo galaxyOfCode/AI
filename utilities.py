@@ -1,3 +1,5 @@
+import os
+import platform
 from rich import print
 from rich.table import Table
 import subprocess
@@ -122,3 +124,9 @@ def check_package_version(package_name: str) -> str | None:
     except Exception as e:
         print(f"\nUnexpected error while checking '{package_name}': {e}\n")
         return "error"
+    
+def clear_screen() -> None:
+    if platform.system() == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")

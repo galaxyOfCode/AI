@@ -9,7 +9,7 @@ from errors import handle_openai_errors, handle_file_errors
 from PyPDF2 import PdfReader
 
 
-def extract_text_from_file(file_path):
+def extract_text_from_file(file_path) -> str:
     """
     Extracts text from a file. Supports both text files and PDFs.
     """
