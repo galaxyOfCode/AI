@@ -19,10 +19,9 @@ AI Assistant (J. Hall, 2023-2024)
  6 = Vision
  7 = Speech-to-Text
  8 = Text-to-Speech
- 9 = List GPT Models
-10 = List All Models
-11 = List Current Settings
-12 = Update API packages
+ 9 = List All Models
+10 = List Current Settings
+11 = Update API packages
  Q = Quit
 """
     print(menu)
@@ -68,7 +67,7 @@ def list_settings(config) -> None:
     table.add_row("IMG_MODEL", str(config.IMG_MODEL))
     table.add_row("QUALITY", str(config.QUALITY))
     table.add_row("VISION_MODEL", str(config.VISION_MODEL))
-    table.add_row("WHISPER_MODEL", str(config.WHISPER_MODEL))
+    table.add_row("TRANSCRIBE_MODEL", str(config.TRANSCRIBE_MODEL))
     table.add_row("TTS_MODEL", str(config.TTS_MODEL))
     table.add_row("TTS_VOICE", str(config.TTS_VOICE))
     table.add_row("ASST_TEMP", str(config.ASST_TEMP))

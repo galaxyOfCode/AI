@@ -24,7 +24,7 @@ def chat(client, model, temperature, frequency_penalty, option) -> None:
             initial_prompt = ("""You are a helpful and friendly question answering expert. You can call the user by her first name, which is Ellen.  You have a wide range of knowledge and are a world class expert in all things. Give your response in simple terms. If appropriate, give an example to help the user understand your answer.""")
             messages = [{"role": "system", "content": initial_prompt}]
         else:
-            initial_prompt = (f"""You are a helpful and friendly law expert. The user is a new lawyer and will need expert advice.  You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer. Your answers can include examples if that will help the user better understand your answer.  If you give citations, make sure you check that they are correct.  You can call the user by her first name, which is Ellen.""")
+            initial_prompt = (f"""You are a helpful and friendly law expert. The user is a new lawyer specializing in immigration law and will need expert advice.  You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer. Your answers can include examples if that will help the user better understand your answer.  If you give citations, make sure you check that they are correct.  You can call the user by her first name, which is Ellen.""")
             messages = [{"role": "system", "content": initial_prompt}]
         while True:
             user_input = input(user_prompt)

@@ -46,14 +46,12 @@ def main():
         elif choice == 8:
             text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE)
         elif choice == 9:
-            list_models(client, 0)
-        elif choice == 10:
             list_models(client, 1)
-        elif choice == 11:
+        elif choice == 10:
             list_settings(config)
-        elif choice == 12:
+        elif choice == 11:
             update()
-        elif choice == 13:
+        elif choice == 12:
             exit()
         else:
             input(

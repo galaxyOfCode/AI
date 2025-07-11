@@ -7,7 +7,7 @@ class Config:
         self.cfg = ConfigParser()
         self.cfg.read(config_file)
 
-        self.MENU_MAX = 13
+        self.MENU_MAX = 12
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
         self.FASTER_MODEL = self.cfg["OPENAI"]["FASTER_MODEL"]
         self.BETTER_MODEL = self.cfg["OPENAI"]["BETTER_MODEL"]
@@ -18,7 +18,7 @@ class Config:
         self.IMG_MODEL = self.cfg["OPENAI"]["IMG_MODEL"]
         self.QUALITY = self.cfg["OPENAI"]["QUALITY"]
         self.VISION_MODEL = self.cfg["OPENAI"]["VISION_MODEL"]
-        self.WHISPER_MODEL = self.cfg["OPENAI"]["WHISPER_MODEL"]
+        self.TRANSCRIBE_MODEL = self.cfg["OPENAI"]["TRANSCRIBE_MODEL"]
         self.TTS_MODEL = self.cfg["OPENAI"]["TTS_MODEL"]
         self.TTS_VOICE = self.cfg["OPENAI"]["TTS_VOICE"]
         self.api_key = self.get_api_key()
