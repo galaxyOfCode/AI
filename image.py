@@ -30,10 +30,10 @@ def generate_image(client, model, quality) -> None:
         image_url = response.data[0].url
         print(f"{assistant_prompt} {image_url}")
         pyperclip.copy(image_url)
+        input("\n\nClick the above link (while holding Ctrl) to view the image. Press <Enter> to continue...")
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
-        print(content)
-        return
+        return content
     except KeyboardInterrupt:
         print("Exiting...")
         return
@@ -85,6 +85,7 @@ def describe_image(api_key, model, max_tokens) -> None:
     except (HTTPError, Timeout, RequestException, Exception) as e:
         content = handle_request_errors(e)
         print(f"{assistant_prompt} {content}")
+        input("\n\nPress <Enter> to continue...")
         return
     except KeyboardInterrupt:
         print("Exiting...")
@@ -93,6 +94,7 @@ def describe_image(api_key, model, max_tokens) -> None:
         content = data["choices"][0]["message"]["content"]
         print(f"{assistant_prompt} {content}")
         pyperclip.copy(content)
+        input("\n\nPress <Enter> to continue...")
     except Exception as e:
         print(f"Something went wrong: {e}")
         error = data["error"]["message"]

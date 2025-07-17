@@ -42,7 +42,7 @@ def main():
             describe_image(config.api_key, config.VISION_MODEL,
                            config.MAX_TOKENS)
         elif choice == 7:
-            speech_to_text(client, config.WHISPER_MODEL)
+            speech_to_text(client, config.TRANSCRIBE_MODEL)
         elif choice == 8:
             text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE)
         elif choice == 9:
