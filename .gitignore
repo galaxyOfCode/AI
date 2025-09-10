@@ -11,3 +11,4 @@ out
 __pycache__
 .venv
 .envrc
+pip_update.*
