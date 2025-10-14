@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 import platform
 from rich import print
@@ -14,14 +15,15 @@ AI Assistant (J. Hall, 2023-2024)
  1 = Faster Chat
  2 = Better Chat
  3 = Legal Assistant
- 4 = Document Review
- 5 = Image Generation
- 6 = Vision
- 7 = Speech-to-Text
- 8 = Text-to-Speech
- 9 = List All Models
-10 = List Current Settings
-11 = Update API packages
+ 4 = Date Calculator
+ 5 = Document Review
+ 6 = Image Generation
+ 7 = Vision
+ 8 = Speech-to-Text
+ 9 = Text-to-Speech
+10 = List All Models
+11 = List Current Settings
+12 = Update API packages
  Q = Quit
 """
     print(menu)
@@ -124,8 +126,49 @@ def check_package_version(package_name: str) -> str | None:
         print(f"\nUnexpected error while checking '{package_name}': {e}\n")
         return "error"
     
+
 def clear_screen() -> None:
     if platform.system() == "Windows":
         os.system("cls")
     else:
         os.system("clear")
+
+
+def date_calculator() -> None:
+    """Simple Date Calculator"""
+
+    print("\nDate Calculator")
+    print("1. Add days to a date")
+    print("2. Subtract days from a date")
+    print("3. Calculate difference between two dates")
+    choice = input("Choose an option (1-3): ")
+
+    if choice not in {"1", "2", "3"}:
+        input("Invalid choice. Hit <Enter> to return to Main Menu...")
+        return
+
+    try:
+        if choice in {"1", "2"}:
+            date_str = input("Enter the date (MM-DD-YYYY): ")
+            base_date = datetime.strptime(date_str, "%m-%d-%Y")
+            days = int(input("Enter number of days: "))
+            if choice == "1":
+                new_date = base_date + timedelta(days=days)
+                print(f"New date after adding {days} days: {new_date.date()}")
+            else:
+                new_date = base_date - timedelta(days=days)
+                print(f"New date after subtracting {days} days: {new_date.date()}")
+        else:
+            date_str1 = input("Enter the first date (MM-DD-YYYY): ")
+            date_str2 = input("Enter the second date (MM-DD-YYYY): ")
+            date1 = datetime.strptime(date_str1, "%m-%d-%Y")
+            date2 = datetime.strptime(date_str2, "%m-%d-%Y")
+            delta = abs((date2 - date1).days)
+            print(f"Difference between {date_str1} and {date_str2}: {delta} days")
+    except ValueError as ve:
+        print(f"Invalid input: {ve}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    input("Hit <Enter> to return to Main Menu...")
+    

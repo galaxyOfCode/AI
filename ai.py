@@ -7,7 +7,7 @@ from image import (describe_image, generate_image)
 from voice import text_to_speech, speech_to_text
 from utilities import (print_menu, not_numeric,
                        list_models, list_settings,
-                       update, clear_screen)
+                       update, clear_screen, date_calculator)
 
 
 def main():
@@ -35,23 +35,25 @@ def main():
             chat(client, config.ASST_MODEL,
                  config.ASST_TEMP, config.FREQ_PENALTY, 0)
         elif choice == 4:
-            doc_review(client, config.BETTER_MODEL)
+            date_calculator()
         elif choice == 5:
-            generate_image(client, config.IMG_MODEL, config.QUALITY)
+            doc_review(client, config.BETTER_MODEL)
         elif choice == 6:
+            generate_image(client, config.IMG_MODEL, config.QUALITY)
+        elif choice == 7:
             describe_image(config.api_key, config.VISION_MODEL,
                            config.MAX_TOKENS)
-        elif choice == 7:
-            speech_to_text(client, config.TRANSCRIBE_MODEL)
         elif choice == 8:
-            text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE)
+            speech_to_text(client, config.TRANSCRIBE_MODEL)
         elif choice == 9:
-            list_models(client, 1)
+            text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE)
         elif choice == 10:
-            list_settings(config)
+            list_models(client, 1)
         elif choice == 11:
-            update()
+            list_settings(config)
         elif choice == 12:
+            update()
+        elif choice == 13:
             exit()
         else:
             input(
