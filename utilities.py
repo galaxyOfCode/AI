@@ -10,7 +10,7 @@ def print_menu() -> None:
     """Prints the Main Menu"""
 
     menu = """
-AI Assistant (J. Hall, 2023-2025)
+AI Assistant (J. Hall, 2023-2026)
 
  1 = Faster Chat
  2 = Better Chat
