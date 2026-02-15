@@ -1,101 +1,121 @@
 import base64
 import openai
+from pathlib import Path
 import pyperclip
 import requests
-from requests.exceptions import HTTPError, Timeout, RequestException
-from termcolor import colored
-import tkinter as tk
-from tkinter import filedialog
+from rich.console import Console
+from rich.prompt import Prompt
+from rich.panel import Panel
+from rich.status import Status
 
 from errors import (handle_request_errors,
                     handle_openai_errors,
                     handle_file_errors)
 
 
-def generate_image(client, model, quality) -> None:
-    """
-    This will allow the user to input a prompt and openAI will create an image based
-    on the prompt.  MODEL is the image model that will be used. QUALITY is the quality of the image
-    that will be generated (Low, Medium, High).  The image will be copied to the clipboard.
-    """
+console = Console()
 
-    image_prompt = colored("Image Description: ", "light_blue", attrs=["bold"])
-    assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
-    try:
-        prompt = input(image_prompt)
-        response = client.images.generate(
-            model=model,
-            prompt=prompt,
-            quality=quality)
-        image_url = response.data[0].url
-        print(f"{assistant_prompt} {image_url}")
-        pyperclip.copy(image_url)
-        input("\n\nClick the above link (while holding Ctrl) to view the image. Press <Enter> to continue...")
-    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
-        content = handle_openai_errors(e)
-        return content
-    except KeyboardInterrupt:
-        print("Exiting...")
+def generate_image(client, model, quality) -> None:
+    prompt_text = Prompt.ask("[bold bright_blue]Image Description[/bold bright_blue]")
+
+    if not prompt_text:
         return
+
+    try:
+        with Status("[bold green]Generating image...", spinner="aesthetic") as status:
+            img = client.images.generate(
+                model=model,
+                prompt=prompt_text,
+                n=1,
+                size="1024x1024"
+            )
+
+            desktop_path = Path.home() / "Desktop" / "output.png"
+
+            image_bytes = base64.b64decode(img.data[0].b64_json)
+            with open(desktop_path, "wb") as f:
+                f.write(image_bytes)
+        
+        console.print("\n")
+        console.print(Panel(
+            f"[bold green]Success![/bold green]\n\nImage saved to: [cyan]{desktop_path}[/cyan]",
+            title="Assistant",
+            border_style="bright_blue",
+            expand=False
+        ))
+
+        console.input("\nPress [bold]Enter[/bold] to return to menu...")
+
+    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
+        error_content = handle_openai_errors(e)
+        console.print(Panel(f"[bold red]API Error:[/bold red]\n{error_content}", border_style="red"))
+        console.input("\n[yellow]Press Enter to acknowledge error...[/yellow]")
+        
     except Exception as e:
-        print(f"Something went wrong: {e}")
-        print("Exiting...")
+        console.print(f"\n[bold red]Unexpected Error:[/bold red] {e}")
+        console.input("\n[yellow]Press Enter to acknowledge error...[/yellow]")
 
 
 def describe_image(api_key, model, max_tokens) -> None:
-    """The user can select an image and ask for a description"""
+    """The user provides an image path and asks for a description using Rich UI."""
 
-    user_prompt = colored("You: ", "light_blue", attrs=["bold"])
-    file_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
-    assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
-    prompt = input(user_prompt)
-    root = tk.Tk()
-    root.withdraw()
-    print(file_prompt)
-    image_path = filedialog.askopenfilename(title="Select a File")
-    root.destroy()
-    if image_path:
-        print("Working...")
-    else:
-        print("No file selected or dialog canceled.\n")
+    prompt_text = Prompt.ask("[bold bright_blue]You[/bold bright_blue]")
+
+    image_path = Prompt.ask("[bold bright_blue]Enter image file path[/bold bright_blue]")
+
+    if not image_path:
+        console.print("[yellow]No file path provided. Operation cancelled.[/yellow]\n")
         return
-    try:
-        with open(image_path, "rb") as image_file:
-            base64_image = base64.b64encode(image_file.read()).decode("utf-8")
-    except (PermissionError, OSError, FileNotFoundError) as e:
-        content = handle_file_errors(e)
-        print(content)
-        return
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"}
-    payload = {
-        "model": model,
-        "messages": [{
-            "role": "user",
-            "content": [{"type": "text",
-                         "text": prompt},
-                        {"type": "image_url",
-                         "image_url": {
-                                 "url": f"data:image/png;base64,{base64_image}"}}]}], "max_tokens": max_tokens}
-    try:
-        response = requests.post(
-            "https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-        data = response.json()
-    except (HTTPError, Timeout, RequestException, Exception) as e:
-        content = handle_request_errors(e)
-        print(f"{assistant_prompt} {content}")
-        input("\n\nPress <Enter> to continue...")
-        return
-    except KeyboardInterrupt:
-        print("Exiting...")
-        return
+
+    with Status("[bold green]Processing image...[/bold green]", spinner="dots") as status:
+        try:
+            with open(image_path, "rb") as image_file:
+                base64_image = base64.b64encode(image_file.read()).decode("utf-8")
+        except (PermissionError, OSError, FileNotFoundError) as e:
+            content = handle_file_errors(e)
+            console.print(Panel(content, title="File Error", border_style="red"))
+            return
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
+        
+        payload = {
+            "model": model,
+            "messages": [{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt_text},
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
+                ]
+            }], 
+            "max_tokens": max_tokens
+        }
+
+        try:
+            response = requests.post(
+                "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
+            )
+            response.raise_for_status()
+            data = response.json()
+        except Exception as e:
+            content = handle_request_errors(e)
+            console.print(f"\n[bold bright_red]Assistant:[/bold bright_red] {content}")
+            Prompt.ask("\nPress [bold]Enter[/bold] to continue")
+            return
+
     try:
         content = data["choices"][0]["message"]["content"]
-        print(f"{assistant_prompt} {content}")
+        
+        console.print("\n[bold bright_red]Assistant:[/bold bright_red]")
+        console.print(Panel(content, border_style="bright_red"))
+        
         pyperclip.copy(content)
-        input("\n\nPress <Enter> to continue...")
+        console.print("[italic green](Description copied to clipboard)[/italic green]")
+        console.input("\nPress [bold]Enter[/bold] to continue...")
+        
     except Exception as e:
-        print(f"Something went wrong: {e}")
-        error = data["error"]["message"]
-        print(f"{assistant_prompt} {error}")
+        error_msg = data.get("error", {}).get("message", str(e))
+        console.print(f"[bold red]Something went wrong:[/bold red] {error_msg}")
+        console.input("\n[yellow]Press Enter to acknowledge error...[/yellow]")

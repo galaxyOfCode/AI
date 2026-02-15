@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta
 import os
 import platform
+from rich.console import Console
 from rich import print
 from rich.table import Table
 import subprocess
 
+console = Console()
 
 def print_menu() -> None:
     """Prints the Main Menu"""
@@ -32,24 +34,38 @@ AI Assistant (J. Hall, 2023-2026)
 def not_numeric() -> None:
     """Error message if menu choice is not numeric"""
 
-    input("\nYou Entered a non-numeric value or wrong format.\nHit <Enter> to continue...")
+    console.input("\nYou Entered a [bold red]non-numeric value[/bold red] or wrong format.\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
-def list_models(client, option) -> None:
-    """List only the GPT models available through the API"""
+def list_models(client) -> None:
+    """List the GPT models available through the API using a Rich Table."""
+    
+    with console.status("[bold green]Fetching models from OpenAI..."):
+        try:
+            model_list = client.models.list()
+            model_ids = sorted([model.id for model in model_list.data])
+        except Exception as e:
+            console.print(f"[bold red]Error fetching models:[/bold red] {e}")
+            console.input("[yellow]Hit <Enter> to acknowledge the error...[/yellow]")
+            return
 
-    model_list = client.models.list()
-    models_data = model_list.data
-    model_ids = [model.id for model in models_data]
-    if option == 0:
-        model_ids = [
-            model_id for model_id in model_ids if model_id.startswith("gpt")]
-        print("Current GPT Models\n")
-    else:
-        print("Current openAI Models:\n")
-    model_ids.sort()
-    print("\n".join(model_ids))
-    input("\nHit <Enter> to continue...")
+    table = Table(
+        title="[bold cyan]Available OpenAI Models[/bold cyan]", 
+        show_header=True, 
+        header_style="bold magenta",
+        border_style="bright_blue"
+    )
+    
+    table.add_column("Model ID", justify="left")
+
+    for m_id in model_ids:
+        style = "green" if "gpt" in m_id.lower() else "white"
+        table.add_row(f"[{style}]{m_id}[/{style}]")
+
+    console.print("\n")
+    console.print(table)
+    
+    console.input("\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
 def list_settings(config) -> None:
@@ -80,7 +96,7 @@ def list_settings(config) -> None:
     # Print the table
     print(table)
 
-    input("\nHit <Enter> to continue...")
+    console.input("\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
 def update() -> None:
@@ -98,7 +114,7 @@ def update() -> None:
     else:
         print(
             f"\nYou already have the latest version of {package} - ({original_version})\n")
-    input("Hit <Enter> to continue...")
+    input("Hit [magenta]<Enter>[/magenta] to continue...")
 
 
 def check_package_version(package_name: str) -> str | None:

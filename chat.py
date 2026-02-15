@@ -1,50 +1,62 @@
 import openai
 import pyperclip
-from termcolor import colored
+from rich.console import Console
+from rich.panel import Panel
+from rich.markdown import Markdown
+from rich.live import Live
 
 from errors import handle_openai_errors
 
 
+console = Console()
+
 def chat(client, model, temperature, frequency_penalty, option) -> None:
     """ 
-    Communicates with OpenAI's chatbot to generate responses based on user input.
-
-    Parameters:
-    - client: The OpenAI client instance.
-    - model: The model used for generating responses (e.g., 'gpt-4o').
-    - temperature: Controls randomness in the response.
-    - frequency_penalty: Decreases the likelihood of repetition in responses.
-    - option: Determines if it's a general chat (1) or law tutoring (0).
+    Communicates with OpenAI's chatbot using Rich for a polished UI.
     """
+    
+    if option:
+        initial_prompt = ("You are a pragmatic, matter-of-fact assistant. Your goal is to provide accurate information with maximum density and minimum word count. Avoid conversational filler, polite transitions (e.g., 'I hope this helps,' 'Certainly!'), and flowery adjectives. Do not offer unsolicited opinions or moral guidance unless it is a direct technical requirement of the query. If a question is objective, provide an objective answer. If information is missing, state that it is missing without apology. Be brief, clinical, and direct.")
+    else:
+        initial_prompt = ("You are a senior legal assistant. Your communication style is clinical, precise, and devoid of emotional or conversational filler. Prioritize legal accuracy and structural clarity. Use 'shall' and 'may' strictly according to their legal definitions. Avoid introductory pleasantries (e.g., 'I hope this helps,' 'I have drafted...'). If a legal standard is requested, cite the relevant code or principle directly. If a facts-based query is ambiguous, state 'Insufficient data' rather than speculating. Responses should be formatted with clear headings or numbered lists to maximize scannability. Do not offer personal opinions; provide only objective legal information and drafting assistance. If you cite a specific law or case, double check to ensure it is correct.")
 
-    user_prompt = colored("You: ", "light_blue", attrs=["bold"])
-    assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
+    messages = [{"role": "system", "content": initial_prompt}]
+
     try:
-        if option:
-            initial_prompt = ("""You are a helpful and friendly question answering expert. You can call the user by her first name, which is Ellen.  You have a wide range of knowledge and are a world class expert in all things. Give your response in simple terms. If appropriate, give an example to help the user understand your answer.""")
-            messages = [{"role": "system", "content": initial_prompt}]
-        else:
-            initial_prompt = (f"""You are a helpful and friendly law expert. The user is a new lawyer specializing in immigration law and will need expert advice.  You will answer the users questions with enough detail that the user will be able to understand how you arrived at the answer. Your answers can include examples if that will help the user better understand your answer.  If you give citations, make sure you check that they are correct.  You can call the user by her first name, which is Ellen.""")
-            messages = [{"role": "system", "content": initial_prompt}]
         while True:
-            user_input = input(user_prompt)
+            console.print("\n[bold bright_blue]You:[/bold bright_blue]", end=" ")
+            user_input = input()
+            
+            if user_input.lower() in ["exit", "quit", "q"]:
+                break
+
             messages.append({"role": "user", "content": user_input})
 
-            response = client.chat.completions.create(
-                model=model,
-                messages=messages,
-                temperature=temperature,
-                frequency_penalty=frequency_penalty)
+            with console.status("[bold bright_red]Assistant is thinking...[/bold bright_red]", spinner="dots"):
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    temperature=temperature,
+                    frequency_penalty=frequency_penalty
+                )
+            
             content = response.choices[0].message.content
-            print(f"{assistant_prompt} {content}")
+            
+            console.print(
+                Panel(
+                    Markdown(content),
+                    title="[bold bright_red]Assistant[/bold bright_red]",
+                    title_align="left",
+                    border_style="bright_red"
+                )
+            )
+
             messages.append({"role": "assistant", "content": content})
             pyperclip.copy(content)
+
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
-        content = handle_openai_errors(e)
-        print(f"{assistant_prompt} {content}")
-        return
+        handle_openai_errors(e)
     except KeyboardInterrupt:
-        print("Exiting...")
-        return
+        console.print("\n[yellow]Exiting...[/yellow]")
     except Exception as e:
-        print(f"{assistant_prompt} Something went wrong: {e}")
+        console.print(f"[bold red]Something went wrong:[/bold red] {e}")

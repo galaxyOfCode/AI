@@ -1,76 +1,81 @@
-import openai
 from pathlib import Path
 import pyperclip
-from termcolor import colored
-import tkinter as tk
-from tkinter import filedialog
+import openai
+from rich.console import Console
+from rich.prompt import Prompt
 
 from errors import handle_file_errors, handle_openai_errors
 
+console = Console()
 
 def speech_to_text(client, model) -> None:
-    """
-    Transcribes a voice file to text. This will take an audio file and create
-    and transcribe a text file from the audio source. The transcription will
-    appear as a text response from the assistant. It will also be copied to the clipboard.
-    @param:
-    - client: The OpenAI client instance.
-    - model: The model used for generating responses (e.g., 'gpt-3.5-turbo'). 
-    """
+    """ Transcribes a voice file to text using Rich for terminal styling. """
 
-    user_prompt = colored("Select a File: ", "light_blue", attrs=["bold"])
-    assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
-    root = tk.Tk()
-    root.withdraw()
-    print(user_prompt)
-    choice = filedialog.askopenfilename(title="Select a File")
-    root.destroy()
-    if choice:
-        print(f"Selected file: {choice}")
-    else:
-        print("No file selected or dialog canceled.\n")
+    user_style = "bold bright_blue"
+    assistant_style = "bold bright_red"
+
+    console.print("Select a File", style=user_style)
+    
+    # Replaced tkinter with a Rich Prompt for the file path
+    choice = Prompt.ask("[bold bright_blue]Enter the path to your audio file[/[bold bright_blue]")
+
+    if not choice or not Path(choice).exists():
+        console.print("[yellow]No valid file selected or file does not exist.\n[/yellow]")
         return
+
     try:
         with open(choice, "rb") as audio_file:
             content = client.audio.transcriptions.create(
                 model=model,
                 file=audio_file,
-                response_format="text")
-            print(f"{assistant_prompt} {content}")
+                response_format="text"
+            )
+            
+            console.print(f"Assistant: ", style=assistant_style, end="")
+            console.print(content)
             pyperclip.copy(content)
+
+            console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
+            
     except (PermissionError, OSError, FileNotFoundError) as e:
         content = handle_file_errors(e)
-        print(f"{assistant_prompt} {content}")
-        return
+        console.print(f"Assistant: {content}", style=assistant_style)
+
     except KeyboardInterrupt:
-        print("Exiting...")
+        console.print("\n[yellow]Exiting...[/]")
 
 
 def text_to_speech(client, model, voice) -> None:
-    """
-    Text to speech. This will take text from a user prompt and create an audio file using a specified voice
-    (TTS_VOICE). The new file will default to 'speech.mp3' and will be saved to the Desktop.
-    @param:
-    - client: The OpenAI client instance.
-    - model: The model used for generating responses (e.g., 'gpt-3.5-turbo'). 
-    - voice: The voice model used (e.g. 'alloy')
-    """
+    """ Converts text to speech using Rich for input and output styling. """
 
-    text_prompt = colored("Enter the text: ", "light_blue", attrs=["bold"])
-    assistant_prompt = colored("Assistant: ", "light_red", attrs=["bold"])
+    assistant_style = "bold bright_red"
+
     try:
-        user_input = input(text_prompt)
+        user_input = Prompt.ask("[bold bright_blue]Enter the text[/bold bright_blue]")
+        
+        if not user_input:
+            return
+
         speech_file_path = Path.home().joinpath("Desktop") / "speech.mp3"
+        
         response = client.audio.speech.create(
             model=model,
             voice=voice,
-            input=user_input)
+            input=user_input
+        )
+        
+        # Note: stream_to_file is deprecated in newer OpenAI SDKs, 
         response.stream_to_file(speech_file_path)
-        print(
-    f"{assistant_prompt} 'speech.mp3' successfully created, Check your Desktop\n")
+        
+        console.print(
+            f"Assistant: 'speech.mp3' successfully created. Check your Desktop\n", 
+            style=assistant_style
+        )
+        console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
+
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
-        print(f"{assistant_prompt} {content}")
-        return
+        console.print(f"Assistant: {content}", style=assistant_style)
+
     except KeyboardInterrupt:
-        print("Exiting...")
+        console.print("\n[yellow]Exiting...[/yellow]")

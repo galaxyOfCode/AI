@@ -1,4 +1,5 @@
 from openai import OpenAI
+from rich.console import Console
 
 from chat import chat
 from reviewer import doc_review
@@ -11,12 +12,13 @@ from utilities import (print_menu, not_numeric,
 
 
 def main():
+    console = Console()
     config = Config()
     client = OpenAI()
     while True:
         clear_screen()
         print_menu()
-        choice = input("Enter Choice: ")
+        choice = console.input("[bold cyan]Enter Choice:[/bold cyan] ")
         if choice == "q" or choice == "Q":
             choice = config.MENU_MAX
         else:
@@ -48,7 +50,7 @@ def main():
         elif choice == 9:
             text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE)
         elif choice == 10:
-            list_models(client, 1)
+            list_models(client)
         elif choice == 11:
             list_settings(config)
         elif choice == 12:
@@ -56,8 +58,8 @@ def main():
         elif choice == 13:
             exit()
         else:
-            input(
-                f"\nPlease Make a Choice Between 1 and {config.MENU_MAX}\n Hit <Enter> to return to Main Menu..."
+            console.input(
+                f"\nPlease Make a Choice Between [bold red]1 and {config.MENU_MAX}[/bold red]\n Hit [magenta]<Enter>[/magenta] to return to Main Menu..."
             )
 
 
