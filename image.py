@@ -13,9 +13,7 @@ from errors import (handle_request_errors,
                     handle_file_errors)
 
 
-console = Console()
-
-def generate_image(client, model, quality) -> None:
+def generate_image(client, model, quality, console: Console) -> None:
     prompt_text = Prompt.ask("[bold bright_blue]Image Description[/bold bright_blue]")
 
     if not prompt_text:
@@ -56,7 +54,7 @@ def generate_image(client, model, quality) -> None:
         console.input("\n[yellow]Press Enter to acknowledge error...[/yellow]")
 
 
-def describe_image(api_key, model, max_tokens) -> None:
+def describe_image(api_key, model, max_tokens, console: Console) -> None:
     """The user provides an image path and asks for a description using Rich UI."""
 
     prompt_text = Prompt.ask("[bold bright_blue]You[/bold bright_blue]")

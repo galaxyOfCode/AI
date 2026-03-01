@@ -9,7 +9,6 @@ from rich.markdown import Markdown
 from errors import handle_openai_errors, handle_file_errors
 from PyPDF2 import PdfReader
 
-console = Console()
 
 def extract_text_from_file(file_path) -> str:
     """Extracts text from a file. Supports both text files and PDFs."""
@@ -31,7 +30,7 @@ def extract_text_from_file(file_path) -> str:
     else:
         raise ValueError("Unsupported file type. Please provide a .txt or .pdf file.")
 
-def doc_review(client, model) -> None:
+def doc_review(client, model, console: Console) -> None:
     """Reviews a document and allows for a continuous follow-up conversation."""
 
     try:

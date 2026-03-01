@@ -7,7 +7,6 @@ class Config:
         self.cfg = ConfigParser()
         self.cfg.read(config_file)
 
-        self.MENU_MAX = 13
         self.MAX_TOKENS = self.cfg.getint("OPENAI", "MAX_TOKENS")
         self.FASTER_MODEL = self.cfg["OPENAI"]["FASTER_MODEL"]
         self.BETTER_MODEL = self.cfg["OPENAI"]["BETTER_MODEL"]

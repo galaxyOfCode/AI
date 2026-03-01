@@ -6,9 +6,8 @@ from rich.prompt import Prompt
 
 from errors import handle_file_errors, handle_openai_errors
 
-console = Console()
 
-def speech_to_text(client, model) -> None:
+def speech_to_text(client, model, console: Console) -> None:
     """ Transcribes a voice file to text using Rich for terminal styling. """
 
     user_style = "bold bright_blue"
@@ -17,7 +16,7 @@ def speech_to_text(client, model) -> None:
     console.print("Select a File", style=user_style)
     
     # Replaced tkinter with a Rich Prompt for the file path
-    choice = Prompt.ask("[bold bright_blue]Enter the path to your audio file[/[bold bright_blue]")
+    choice = Prompt.ask("[bold bright_blue]Enter the path to your audio file[/bold bright_blue]")
 
     if not choice or not Path(choice).exists():
         console.print("[yellow]No valid file selected or file does not exist.\n[/yellow]")
@@ -45,7 +44,7 @@ def speech_to_text(client, model) -> None:
         console.print("\n[yellow]Exiting...[/]")
 
 
-def text_to_speech(client, model, voice) -> None:
+def text_to_speech(client, model, voice, console: Console) -> None:
     """ Converts text to speech using Rich for input and output styling. """
 
     assistant_style = "bold bright_red"
@@ -79,3 +78,4 @@ def text_to_speech(client, model, voice) -> None:
 
     except KeyboardInterrupt:
         console.print("\n[yellow]Exiting...[/yellow]")
+        

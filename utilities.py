@@ -6,7 +6,6 @@ from rich import print
 from rich.table import Table
 import subprocess
 
-console = Console()
 
 def print_menu() -> None:
     """Prints the Main Menu"""
@@ -19,8 +18,8 @@ AI Assistant (J. Hall, 2023-2026)
  3 = Legal Assistant
  4 = Date Calculator
  5 = Document Review
- 6 = Image Generation
- 7 = Vision
+ 6 = Generate an Image
+ 7 = Descibe an Image
  8 = Speech-to-Text
  9 = Text-to-Speech
 10 = List All Models
@@ -31,13 +30,13 @@ AI Assistant (J. Hall, 2023-2026)
     print(menu)
 
 
-def not_numeric() -> None:
+def not_numeric(console: Console) -> None:
     """Error message if menu choice is not numeric"""
 
     console.input("\nYou Entered a [bold red]non-numeric value[/bold red] or wrong format.\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
-def list_models(client) -> None:
+def list_models(client, console: Console) -> None:
     """List the GPT models available through the API using a Rich Table."""
     
     with console.status("[bold green]Fetching models from OpenAI..."):
@@ -68,7 +67,7 @@ def list_models(client) -> None:
     console.input("\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
-def list_settings(config) -> None:
+def list_settings(config, console: Console) -> None:
     """Prints off the hardcoded "Magic Numbers" """
 
     table = Table(title="Current Settings", show_header=True, header_style="bold blue")
@@ -186,5 +185,5 @@ def date_calculator() -> None:
     except Exception as e:
         print(f"An error occurred: {e}")
 
-    input("Hit <Enter> to return to Main Menu...")
+    console.input("Hit [magenta]<Enter>[/magenta] to return to Main Menu...")
     

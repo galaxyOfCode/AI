@@ -8,9 +8,7 @@ from rich.live import Live
 from errors import handle_openai_errors
 
 
-console = Console()
-
-def chat(client, model, temperature, frequency_penalty, option) -> None:
+def chat(client, model, temperature, frequency_penalty, option, console: Console) -> None:
     """ 
     Communicates with OpenAI's chatbot using Rich for a polished UI.
     """
