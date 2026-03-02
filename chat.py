@@ -3,12 +3,11 @@ import pyperclip
 from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
-from rich.live import Live
 
 from errors import handle_openai_errors
 
 
-def chat(client, model, temperature, frequency_penalty, option, console: Console) -> None:
+def chat(client: openai.OpenAI, model: str, temperature: float, frequency_penalty: float, option: bool, console: Console) -> None:
     """ 
     Communicates with OpenAI's chatbot using Rich for a polished UI.
     """

@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta
+import openai
 import os
 import platform
 from rich.console import Console
 from rich import print
 from rich.table import Table
 import subprocess
+
+from config import Config
 
 
 def print_menu() -> None:
@@ -36,7 +39,7 @@ def not_numeric(console: Console) -> None:
     console.input("\nYou Entered a [bold red]non-numeric value[/bold red] or wrong format.\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
-def list_models(client, console: Console) -> None:
+def list_models(client: openai.OpenAI, console: Console) -> None:
     """List the GPT models available through the API using a Rich Table."""
     
     with console.status("[bold green]Fetching models from OpenAI..."):
@@ -67,7 +70,7 @@ def list_models(client, console: Console) -> None:
     console.input("\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
-def list_settings(config, console: Console) -> None:
+def list_settings(config: Config, console: Console) -> None:
     """Prints off the hardcoded "Magic Numbers" """
 
     table = Table(title="Current Settings", show_header=True, header_style="bold blue")
@@ -149,7 +152,7 @@ def clear_screen() -> None:
         os.system("clear")
 
 
-def date_calculator() -> None:
+def date_calculator(console: Console) -> None:
     """Simple Date Calculator"""
 
     print("\nDate Calculator")
@@ -159,7 +162,7 @@ def date_calculator() -> None:
     choice = input("Choose an option (1-3): ")
 
     if choice not in {"1", "2", "3"}:
-        input("Invalid choice. Hit <Enter> to return to Main Menu...")
+        console.input("[bold red]Invalid choice.[/] Hit [magenta]<Enter>[/] to return to Main Menu...")
         return
 
     try:

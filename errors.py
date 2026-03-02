@@ -2,7 +2,7 @@ import openai
 from requests.exceptions import HTTPError, Timeout, RequestException
 
 
-def handle_file_errors(exception) -> str:
+def handle_file_errors(exception: Exception) -> str:
     if isinstance(exception, FileNotFoundError):
         return "Error: The file was not found."
     elif isinstance(exception, PermissionError):
@@ -12,7 +12,7 @@ def handle_file_errors(exception) -> str:
     return "An unknown file error occurred."
 
 
-def handle_openai_errors(exception) -> str:
+def handle_openai_errors(exception: openai.OpenAIError) -> str:
     if isinstance(exception, openai.APIConnectionError):
         return "The server could not be reached\n" + \
             str(exception.__cause__)
@@ -24,7 +24,7 @@ def handle_openai_errors(exception) -> str:
     return "An unknown openAI error occurred."
 
 
-def handle_request_errors(exception) -> str:
+def handle_request_errors(exception: RequestException) -> str:
     if isinstance(exception, HTTPError):
         return "An HTTP error occurred"
     elif isinstance(exception, Timeout):

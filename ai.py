@@ -54,7 +54,7 @@ def main():
         elif choice == DOC_REVIEW:
             doc_review(client, config.BETTER_MODEL)
         elif choice == IMG_GEN:
-            generate_image(client, config.IMG_MODEL, config.QUALITY, console)
+            generate_image(client, config.IMG_MODEL, console)
         elif choice == IMG_DESC:
             describe_image(config.api_key, config.VISION_MODEL,
                            config.MAX_TOKENS, console)

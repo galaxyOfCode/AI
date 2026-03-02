@@ -7,7 +7,7 @@ from rich.prompt import Prompt
 from errors import handle_file_errors, handle_openai_errors
 
 
-def speech_to_text(client, model, console: Console) -> None:
+def speech_to_text(client: openai.OpenAI, model: str, console: Console) -> None:
     """ Transcribes a voice file to text using Rich for terminal styling. """
 
     user_style = "bold bright_blue"
@@ -44,7 +44,7 @@ def speech_to_text(client, model, console: Console) -> None:
         console.print("\n[yellow]Exiting...[/]")
 
 
-def text_to_speech(client, model, voice, console: Console) -> None:
+def text_to_speech(client: openai.OpenAI, model: str, voice: str, console: Console) -> None:
     """ Converts text to speech using Rich for input and output styling. """
 
     assistant_style = "bold bright_red"

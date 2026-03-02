@@ -10,7 +10,7 @@ from errors import handle_openai_errors, handle_file_errors
 from PyPDF2 import PdfReader
 
 
-def extract_text_from_file(file_path) -> str:
+def extract_text_from_file(file_path: str) -> str:
     """Extracts text from a file. Supports both text files and PDFs."""
 
     if not os.path.exists(file_path):
@@ -30,7 +30,7 @@ def extract_text_from_file(file_path) -> str:
     else:
         raise ValueError("Unsupported file type. Please provide a .txt or .pdf file.")
 
-def doc_review(client, model, console: Console) -> None:
+def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
     """Reviews a document and allows for a continuous follow-up conversation."""
 
     try:
