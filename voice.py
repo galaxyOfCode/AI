@@ -63,8 +63,7 @@ def text_to_speech(client: openai.OpenAI, model: str, voice: str, console: Conso
             input=user_input
         )
         
-        # Note: stream_to_file is deprecated in newer OpenAI SDKs, 
-        response.stream_to_file(speech_file_path)
+        response.write_to_file(speech_file_path)
         
         console.print(
             f"Assistant: 'speech.mp3' successfully created. Check your Desktop\n", 

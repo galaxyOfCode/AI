@@ -101,7 +101,7 @@ def list_settings(config: Config, console: Console) -> None:
     console.input("\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
-def update() -> None:
+def update(console: Console) -> None:
     """Updates the 'openai' package"""
 
     package = "openai"
@@ -116,7 +116,7 @@ def update() -> None:
     else:
         print(
             f"\nYou already have the latest version of {package} - ({original_version})\n")
-    input("Hit [magenta]<Enter>[/magenta] to continue...")
+    console.input("Hit [magenta]<Enter>[/magenta] to continue...")
 
 
 def check_package_version(package_name: str) -> str | None:

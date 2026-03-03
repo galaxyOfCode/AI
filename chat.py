@@ -50,7 +50,9 @@ def chat(client: openai.OpenAI, model: str, temperature: float, frequency_penalt
 
             messages.append({"role": "assistant", "content": content})
             pyperclip.copy(content)
-
+    except KeyboardInterrupt:
+        console.print("\n[bold yellow]Exiting...[/]")
+        return
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         handle_openai_errors(e)
     except KeyboardInterrupt:

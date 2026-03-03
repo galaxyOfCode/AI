@@ -46,6 +46,10 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
         except Exception as e:
             console.print(f"[bold red]Error:[/bold red] {e}")
             return
+        
+        if len(file_content) > 100000:  
+            console.print("[red]Document too large.[/red]")
+            return
 
         system_instruction = (
             "You will receive a document. Please review the document and provide answers to the user's prompt based on the contents of the document. If it will help the user, please provide references to page numbers."

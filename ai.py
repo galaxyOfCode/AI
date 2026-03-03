@@ -38,7 +38,7 @@ def main():
             try:
                 choice = int(choice)
             except ValueError:
-                not_numeric()
+                not_numeric(console)
                 continue
         if choice == FASTER_MODEL:
             chat(client, config.FASTER_MODEL,
@@ -50,7 +50,7 @@ def main():
             chat(client, config.ASST_MODEL,
                  config.ASST_TEMP, config.FREQ_PENALTY, 0, console)
         elif choice == DATE_CALCULATOR:
-            date_calculator()
+            date_calculator(console)
         elif choice == DOC_REVIEW:
             doc_review(client, config.BETTER_MODEL)
         elif choice == IMG_GEN:
@@ -67,7 +67,7 @@ def main():
         elif choice == LIST_SETTINGS:
             list_settings(config, console)
         elif choice == UPDATE_PACKAGES:
-            update()
+            update(console)
         elif choice == MENU_MAX:
             exit()
         else:
