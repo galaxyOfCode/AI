@@ -1,3 +1,7 @@
+"""
+This is the main entry point for the AI application. It provides a menu-driven interface for users to interact with various AI functionalities, including chat, document review, image generation, and speech processing."""
+
+import sys
 from openai import OpenAI
 from rich.console import Console
 
@@ -25,6 +29,8 @@ UPDATE_PACKAGES = 12
 MENU_MAX = 13
 
 def main():
+    """Main function to run the AI Assistant application."""
+
     console = Console()
     config = Config()
     client = OpenAI()
@@ -32,7 +38,7 @@ def main():
         clear_screen()
         print_menu()
         choice = console.input("[bold cyan]Enter Choice:[/bold cyan] ")
-        if choice == "q" or choice == "Q":
+        if choice in ["Q", "q"]:
             choice = MENU_MAX
         else:
             try:
@@ -41,27 +47,27 @@ def main():
                 not_numeric(console)
                 continue
         if choice == FASTER_MODEL:
-            chat(client, config.FASTER_MODEL,
-                 config.CHAT_TEMP, config.FREQ_PENALTY, 1, console)
+            chat(client, config.faster_model,
+                 config.chat_temp, config.freq_penalty, 1, console)
         elif choice == BETTER_MODEL:
-            chat(client, config.BETTER_MODEL,
-                 config.CHAT_TEMP, config.FREQ_PENALTY, 1, console)
+            chat(client, config.better_model,
+                 config.chat_temp, config.freq_penalty, 1, console)
         elif choice == ASST_MODEL:
-            chat(client, config.ASST_MODEL,
-                 config.ASST_TEMP, config.FREQ_PENALTY, 0, console)
+            chat(client, config.asst_model,
+                 config.asst_temp, config.freq_penalty, 0, console)
         elif choice == DATE_CALCULATOR:
             date_calculator(console)
         elif choice == DOC_REVIEW:
-            doc_review(client, config.BETTER_MODEL)
+            doc_review(client, config.better_model, console)
         elif choice == IMG_GEN:
-            generate_image(client, config.IMG_MODEL, console)
+            generate_image(client, config.img_model, console)
         elif choice == IMG_DESC:
-            describe_image(config.api_key, config.VISION_MODEL,
-                           config.MAX_TOKENS, console)
+            describe_image(config.api_key, config.vision_model,
+                           config.max_tokens, console)
         elif choice == SPEECH_TO_TEXT:
-            speech_to_text(client, config.TRANSCRIBE_MODEL, console)
+            speech_to_text(client, config.transcribe_model, console)
         elif choice == TEXT_TO_SPEECH:
-            text_to_speech(client, config.TTS_MODEL, config.TTS_VOICE, console)
+            text_to_speech(client, config.tts_model, config.tts_voice, console)
         elif choice == LIST_MODELS:
             list_models(client, console)
         elif choice == LIST_SETTINGS:
@@ -69,7 +75,7 @@ def main():
         elif choice == UPDATE_PACKAGES:
             update(console)
         elif choice == MENU_MAX:
-            exit()
+            sys.exit()
         else:
             console.input(
                 f"\nPlease Make a Choice Between [bold red]1 and {MENU_MAX}[/bold red]\n Hit [magenta]<Enter>[/magenta] to return to Main Menu..."

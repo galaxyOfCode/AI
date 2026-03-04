@@ -1,11 +1,15 @@
-from datetime import datetime, timedelta
-import openai
+"""
+This module contains utility functions for the AI Assistant, including menu display, error handling, model listing, and date calculations.
+"""
+
 import os
 import platform
-from rich.console import Console
-from rich import print
-from rich.table import Table
 import subprocess
+from datetime import datetime, timedelta
+import openai
+from openai import OpenAIError
+from rich.console import Console
+from rich.table import Table
 
 from config import Config
 
@@ -41,23 +45,23 @@ def not_numeric(console: Console) -> None:
 
 def list_models(client: openai.OpenAI, console: Console) -> None:
     """List the GPT models available through the API using a Rich Table."""
-    
+
     with console.status("[bold green]Fetching models from OpenAI..."):
         try:
             model_list = client.models.list()
             model_ids = sorted([model.id for model in model_list.data])
-        except Exception as e:
+        except OpenAIError as e:
             console.print(f"[bold red]Error fetching models:[/bold red] {e}")
             console.input("[yellow]Hit <Enter> to acknowledge the error...[/yellow]")
             return
 
     table = Table(
-        title="[bold cyan]Available OpenAI Models[/bold cyan]", 
-        show_header=True, 
+        title="[bold cyan]Available OpenAI Models[/bold cyan]",
+        show_header=True,
         header_style="bold magenta",
         border_style="bright_blue"
     )
-    
+
     table.add_column("Model ID", justify="left")
 
     for m_id in model_ids:
@@ -66,7 +70,7 @@ def list_models(client: openai.OpenAI, console: Console) -> None:
 
     console.print("\n")
     console.print(table)
-    
+
     console.input("\nHit [magenta]<Enter>[/magenta] to continue...")
 
 
@@ -74,7 +78,7 @@ def list_settings(config: Config, console: Console) -> None:
     """Prints off the hardcoded "Magic Numbers" """
 
     table = Table(title="Current Settings", show_header=True, header_style="bold blue")
-    
+
     # Add columns
     table.add_column("Setting", style="cyan", no_wrap=True)
     table.add_column("Value", style="magenta")
@@ -96,7 +100,7 @@ def list_settings(config: Config, console: Console) -> None:
     table.add_row("MAX_TOKENS", str(config.MAX_TOKENS))
 
     # Print the table
-    print(table)
+    console.print(table)
 
     console.input("\nHit [magenta]<Enter>[/magenta] to continue...")
 
@@ -112,9 +116,9 @@ def update(console: Console) -> None:
     if original_version == "error" or updated_version == "error":
         return
     if original_version != updated_version:
-        print(f"\n{package} has been updated to version {updated_version}\n")
+        console.print(f"\n{package} has been updated to version {updated_version}\n")
     else:
-        print(
+        console.print(
             f"\nYou already have the latest version of {package} - ({original_version})\n")
     console.input("Hit [magenta]<Enter>[/magenta] to continue...")
 
@@ -138,14 +142,18 @@ def check_package_version(package_name: str) -> str | None:
                 return line.split(":", 1)[1].strip()
         return None  # pip show succeeded, but no version found (very rare)
     except subprocess.CalledProcessError:
-        print(f"\n'{package_name}' package not found.\n")
+        console = Console()
+        console.print(f"\n'{package_name}' package not found.\n")
         return None
-    except Exception as e:
-        print(f"\nUnexpected error while checking '{package_name}': {e}\n")
+    except (OSError, ValueError) as e:
+        console = Console()
+        console.print(f"\nUnexpected error while checking '{package_name}': {e}\n")
         return "error"
-    
+
 
 def clear_screen() -> None:
+    """Clears the terminal screen in a cross-platform way."""
+
     if platform.system() == "Windows":
         os.system("cls")
     else:
@@ -155,10 +163,10 @@ def clear_screen() -> None:
 def date_calculator(console: Console) -> None:
     """Simple Date Calculator"""
 
-    print("\nDate Calculator")
-    print("1. Add days to a date")
-    print("2. Subtract days from a date")
-    print("3. Calculate difference between two dates")
+    console.print("\nDate Calculator")
+    console.print("1. Add days to a date")
+    console.print("2. Subtract days from a date")
+    console.print("3. Calculate difference between two dates")
     choice = input("Choose an option (1-3): ")
 
     if choice not in {"1", "2", "3"}:
@@ -172,21 +180,19 @@ def date_calculator(console: Console) -> None:
             days = int(input("Enter number of days: "))
             if choice == "1":
                 new_date = base_date + timedelta(days=days)
-                print(f"New date after adding {days} days: {new_date.date()}")
+                console.print(f"New date after adding {days} days: {new_date.date()}")
             else:
                 new_date = base_date - timedelta(days=days)
-                print(f"New date after subtracting {days} days: {new_date.date()}")
+                console.print(f"New date after subtracting {days} days: {new_date.date()}")
         else:
             date_str1 = input("Enter the first date (MM-DD-YYYY): ")
             date_str2 = input("Enter the second date (MM-DD-YYYY): ")
             date1 = datetime.strptime(date_str1, "%m-%d-%Y")
             date2 = datetime.strptime(date_str2, "%m-%d-%Y")
             delta = abs((date2 - date1).days)
-            print(f"Difference between {date_str1} and {date_str2}: {delta} days")
+            console.print(f"Difference between {date_str1} and {date_str2}: {delta} days")
     except ValueError as ve:
-        print(f"Invalid input: {ve}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+        console.print(f"Invalid input: {ve}")
 
     console.input("Hit [magenta]<Enter>[/magenta] to return to Main Menu...")
     

@@ -1,13 +1,18 @@
-import openai
+"""
+This module provides the functionality for reviewing documents using OpenAI's API. It allows users to upload a document (either a text file or a PDF), extracts the text content, and then engages in a conversational review process where the user can ask questions about the document and receive answers based on its content. The module includes error handling for file-related issues and OpenAI API errors, and uses the Rich library for enhanced terminal output and user interaction.
+"""
+
 import os
+import openai
 import pyperclip
+from PyPDF2 import PdfReader
 from rich.console import Console
 from rich.prompt import Prompt
 from rich.panel import Panel
 from rich.markdown import Markdown
 
 from errors import handle_openai_errors, handle_file_errors
-from PyPDF2 import PdfReader
+
 
 
 def extract_text_from_file(file_path: str) -> str:
@@ -16,7 +21,8 @@ def extract_text_from_file(file_path: str) -> str:
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
-    _, ext = os.path.splitext(file_path).lower()
+    _, ext = os.path.splitext(file_path)
+    ext = ext.lower()
 
     if ext == ".txt":
         with open(file_path, "r", encoding="utf-8") as file:
@@ -26,7 +32,7 @@ def extract_text_from_file(file_path: str) -> str:
             reader = PdfReader(file_path)
             return "".join([page.extract_text() for page in reader.pages])
         except Exception as e:
-            raise ValueError(f"Error reading PDF file: {e}")
+            raise ValueError(f"Error reading PDF file: {e}") from e
     else:
         raise ValueError("Unsupported file type. Please provide a .txt or .pdf file.")
 
@@ -35,7 +41,7 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
 
     try:
         file_path = Prompt.ask("[bold bright_green]Enter the path to your file[/bold bright_green] (.txt or .pdf)")
-        
+
         if not file_path or not os.path.exists(file_path):
             console.print("[yellow]Invalid file path.[/yellow]")
             return
@@ -43,18 +49,18 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
         try:
             with console.status("[bold green]Extracting text...[/bold green]"):
                 file_content = extract_text_from_file(file_path)
-        except Exception as e:
+        except (FileNotFoundError, ValueError) as e:
             console.print(f"[bold red]Error:[/bold red] {e}")
             return
-        
-        if len(file_content) > 100000:  
+
+        if len(file_content) > 100000:
             console.print("[red]Document too large.[/red]")
             return
 
         system_instruction = (
             "You will receive a document. Please review the document and provide answers to the user's prompt based on the contents of the document. If it will help the user, please provide references to page numbers."
         )
-        
+
         messages = [
             {"role": "system", "content": system_instruction},
             {"role": "system", "content": f"DOCUMENT CONTENT:\n{file_content}"}
@@ -65,7 +71,7 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
         while True:
             user_input = Prompt.ask("[bold bright_blue]You[/bold bright_blue]")
 
-            if user_input.lower() in ["exit", "quit" "q"]:
+            if user_input.lower() in ["exit", "quit", "q"]:
                 break
 
             messages.append({"role": "user", "content": user_input})
@@ -77,21 +83,21 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
                         messages=messages
                     )
                     content = response.choices[0].message.content
-                
+
                 messages.append({"role": "assistant", "content": content})
 
                 console.print("\n")
                 console.print(Panel(Markdown(content), title="[bold red]Assistant[/bold red]", border_style="red"))
-                
+
                 pyperclip.copy(content)
                 console.print("[italic cyan]Response copied to clipboard![/italic cyan]\n")
 
             except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
                 content = handle_openai_errors(e)
                 console.print(Panel(content, title="[bold red]API Error[/bold red]", expand=False))
-                break 
-
-    except Exception as e:
-        console.print(f"[bold red]An unexpected error occurred:[/bold red] {e}")
-    
-    console.print("[yellow]Exiting document review...[/yellow]")
+                break
+    except (FileNotFoundError, ValueError, PermissionError) as e:
+        content = handle_file_errors(e)
+        console.print(Panel(content, title="[bold red]File Error[/bold red]", expand=False))
+    except KeyboardInterrupt:
+        console.print("\n[bold yellow]User interrupted the process.[/bold yellow]")
