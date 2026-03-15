@@ -14,7 +14,6 @@ from rich.markdown import Markdown
 from errors import handle_openai_errors, handle_file_errors
 
 
-
 def extract_text_from_file(file_path: str) -> str:
     """Extracts text from a file. Supports both text files and PDFs."""
 
@@ -77,7 +76,7 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
             messages.append({"role": "user", "content": user_input})
 
             try:
-                with console.status("[bold red]Assistant is thinking..."):
+                with console.status("[bold red]Assistant is thinking...[/bold red]"):
                     response = client.chat.completions.create(
                         model=model,
                         messages=messages

@@ -26,6 +26,7 @@ class Config:
         self.transcribe_model = self.cfg["OPENAI"]["transcribe_model"]
         self.tts_model = self.cfg["OPENAI"]["tts_model"]
         self.tts_voice = self.cfg["OPENAI"]["tts_voice"]
+        self.sts_model = self.cfg["OPENAI"]["sts_model"]
         self.api_key = self.get_api_key()
 
     def get_api_key(self) -> str:

@@ -29,9 +29,10 @@ AI Assistant (J. Hall, 2023-2026)
  7 = Descibe an Image
  8 = Speech-to-Text
  9 = Text-to-Speech
-10 = List All Models
-11 = List Current Settings
-12 = Update API packages
+10 = Speech-to-Speech 
+11 = List All Models
+12 = List Current Settings
+13 = Update API packages
  Q = Quit
 """
     print(menu)
@@ -94,6 +95,7 @@ def list_settings(config: Config, console: Console) -> None:
     table.add_row("TRANSCRIBE_MODEL", str(config.TRANSCRIBE_MODEL))
     table.add_row("TTS_MODEL", str(config.TTS_MODEL))
     table.add_row("TTS_VOICE", str(config.TTS_VOICE))
+    table.add_row("STS_MODEL", str(config.STS_MODEL))
     table.add_row("ASST_TEMP", str(config.ASST_TEMP))
     table.add_row("CHAT_TEMP", str(config.CHAT_TEMP))
     table.add_row("FREQ_PENALTY", str(config.FREQ_PENALTY))
@@ -123,13 +125,12 @@ def update(console: Console) -> None:
     console.input("Hit [magenta]<Enter>[/magenta] to continue...")
 
 
-def check_package_version(package_name: str) -> str | None:
+def check_package_version(package_name: str) -> str:
     """
     Returns the version number of a Python package using pip.
     Returns:
         - version string if found
-        - None if package is not found
-        - 'error' string if another exception occurs
+        - 'Error' if package is not found or another exception occurs
     """
     try:
         result = subprocess.check_output(
@@ -140,15 +141,16 @@ def check_package_version(package_name: str) -> str | None:
         for line in result.splitlines():
             if line.startswith("Version:"):
                 return line.split(":", 1)[1].strip()
-        return None  # pip show succeeded, but no version found (very rare)
+        return "Version not found"
+    
     except subprocess.CalledProcessError:
         console = Console()
         console.print(f"\n'{package_name}' package not found.\n")
-        return None
+        return "Error"
     except (OSError, ValueError) as e:
         console = Console()
         console.print(f"\nUnexpected error while checking '{package_name}': {e}\n")
-        return "error"
+        return "Error"
 
 
 def clear_screen() -> None:
@@ -191,6 +193,7 @@ def date_calculator(console: Console) -> None:
             date2 = datetime.strptime(date_str2, "%m-%d-%Y")
             delta = abs((date2 - date1).days)
             console.print(f"Difference between {date_str1} and {date_str2}: {delta} days")
+            
     except ValueError as ve:
         console.print(f"Invalid input: {ve}")
 

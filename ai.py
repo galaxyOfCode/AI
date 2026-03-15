@@ -23,10 +23,11 @@ IMG_GEN = 6
 IMG_DESC = 7
 SPEECH_TO_TEXT = 8
 TEXT_TO_SPEECH = 9
-LIST_MODELS = 10
-LIST_SETTINGS = 11
-UPDATE_PACKAGES = 12
-MENU_MAX = 13
+SPEECH_TO_SPEECH = 10
+LIST_MODELS = 11
+LIST_SETTINGS = 12
+UPDATE_PACKAGES = 13
+MENU_MAX = 14
 
 def main():
     """Main function to run the AI Assistant application."""
@@ -39,7 +40,7 @@ def main():
         print_menu()
         choice = console.input("[bold cyan]Enter Choice:[/bold cyan] ")
         if choice in ["Q", "q"]:
-            choice = MENU_MAX
+            sys.exit()
         else:
             try:
                 choice = int(choice)
@@ -68,6 +69,11 @@ def main():
             speech_to_text(client, config.transcribe_model, console)
         elif choice == TEXT_TO_SPEECH:
             text_to_speech(client, config.tts_model, config.tts_voice, console)
+        elif choice == SPEECH_TO_SPEECH:
+            console.print(
+                "\n[bold yellow]Coming Soon[/bold yellow]\n"
+            )
+            console.input("Hit [magenta]<Enter>[/magenta] to return to Main Menu...")
         elif choice == LIST_MODELS:
             list_models(client, console)
         elif choice == LIST_SETTINGS:
