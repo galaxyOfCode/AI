@@ -17,6 +17,7 @@ class Config:
         self.faster_model = self.cfg["OPENAI"]["faster_model"]
         self.better_model = self.cfg["OPENAI"]["better_model"]
         self.asst_model = self.cfg["OPENAI"]["asst_model"]
+        self.doc_review_model = self.cfg["OPENAI"]["doc_review_model"]
         self.freq_penalty = self.cfg.getfloat("OPENAI", "freq_penalty")
         self.chat_temp = self.cfg.getfloat("OPENAI", "chat_temp")
         self.asst_temp = self.cfg.getfloat("OPENAI", "asst_temp")

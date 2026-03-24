@@ -85,21 +85,21 @@ def list_settings(config: Config, console: Console) -> None:
     table.add_column("Value", style="magenta")
 
     # Add rows with settings and their corresponding values
-    table.add_row("FASTER_MODEL", str(config.FASTER_MODEL))
-    table.add_row("BETTER_MODEL", str(config.BETTER_MODEL))
-    table.add_row("ASST_MODEL", str(config.ASST_MODEL))
-    table.add_row("DOC_REVIEW_MODEL", str(config.BETTER_MODEL))
-    table.add_row("IMG_MODEL", str(config.IMG_MODEL))
-    table.add_row("QUALITY", str(config.QUALITY))
-    table.add_row("VISION_MODEL", str(config.VISION_MODEL))
-    table.add_row("TRANSCRIBE_MODEL", str(config.TRANSCRIBE_MODEL))
-    table.add_row("TTS_MODEL", str(config.TTS_MODEL))
-    table.add_row("TTS_VOICE", str(config.TTS_VOICE))
-    table.add_row("STS_MODEL", str(config.STS_MODEL))
-    table.add_row("ASST_TEMP", str(config.ASST_TEMP))
-    table.add_row("CHAT_TEMP", str(config.CHAT_TEMP))
-    table.add_row("FREQ_PENALTY", str(config.FREQ_PENALTY))
-    table.add_row("MAX_TOKENS", str(config.MAX_TOKENS))
+    table.add_row("faster_model", str(config.faster_model))
+    table.add_row("better_model", str(config.better_model))
+    table.add_row("asst_model", str(config.asst_model))
+    table.add_row("doc_review_model", str(config.doc_review_model))
+    table.add_row("img_model", str(config.img_model))
+    table.add_row("quality", str(config.quality))
+    table.add_row("vision_model", str(config.vision_model))
+    table.add_row("transcribe_model", str(config.transcribe_model))
+    table.add_row("tts_model", str(config.tts_model))
+    table.add_row("tts_voice", str(config.tts_voice))
+    table.add_row("sts_model", str(config.sts_model))
+    table.add_row("asst_temp", str(config.asst_temp))
+    table.add_row("chat_temp", str(config.chat_temp))
+    table.add_row("freq_penalty", str(config.freq_penalty))
+    table.add_row("max_tokens", str(config.max_tokens))
 
     # Print the table
     console.print(table)
@@ -142,7 +142,7 @@ def check_package_version(package_name: str) -> str:
             if line.startswith("Version:"):
                 return line.split(":", 1)[1].strip()
         return "Version not found"
-    
+
     except subprocess.CalledProcessError:
         console = Console()
         console.print(f"\n'{package_name}' package not found.\n")
@@ -193,7 +193,7 @@ def date_calculator(console: Console) -> None:
             date2 = datetime.strptime(date_str2, "%m-%d-%Y")
             delta = abs((date2 - date1).days)
             console.print(f"Difference between {date_str1} and {date_str2}: {delta} days")
-            
+
     except ValueError as ve:
         console.print(f"Invalid input: {ve}")
 

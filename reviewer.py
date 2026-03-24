@@ -46,7 +46,7 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
             return
 
         try:
-            with console.status("[bold green]Extracting text...[/bold green]"):
+            with console.status("[bold green]Extracting text...[/bold green]", spinner="bouncingBar"):
                 file_content = extract_text_from_file(file_path)
         except (FileNotFoundError, ValueError) as e:
             console.print(f"[bold red]Error:[/bold red] {e}")
@@ -76,7 +76,7 @@ def doc_review(client: openai.OpenAI, model: str, console: Console) -> None:
             messages.append({"role": "user", "content": user_input})
 
             try:
-                with console.status("[bold red]Assistant is thinking...[/bold red]"):
+                with console.status("[bold red]Assistant is thinking...[/bold red]", spinner="bouncingBar"):
                     response = client.chat.completions.create(
                         model=model,
                         messages=messages

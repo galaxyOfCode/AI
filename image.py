@@ -22,7 +22,7 @@ def generate_image(client: openai.OpenAI, model: str, console: Console) -> None:
         return
 
     try:
-        with Status("[bold green]Generating image...", spinner="aesthetic"):
+        with Status("[bold green]Generating image...", spinner="bouncingBar"):
             img = client.images.generate(
                 model=model,
                 prompt=prompt_text,
@@ -74,7 +74,7 @@ def describe_image(client: openai.OpenAI, model: str, max_tokens: int, console: 
         return
 
     try:
-        with console.status("[bold green]Analyzing image...[/bold green]", spinner="dots"):
+        with console.status("[bold green]Analyzing image...[/bold green]", spinner="bouncingBar"):
             response = client.chat.completions.create(
                 model=model,
                 messages=[{

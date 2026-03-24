@@ -32,7 +32,7 @@ def chat(client: openai.OpenAI, model: str, temperature: float, frequency_penalt
 
             messages.append({"role": "user", "content": user_input})
 
-            with console.status("[bold bright_red]Assistant is thinking...[/bold bright_red]", spinner="dots"):
+            with console.status("[bold bright_red]Assistant is thinking...[/bold bright_red]", spinner="bouncingBar"):
                 response = client.chat.completions.create(
                     model=model,
                     messages=messages,
