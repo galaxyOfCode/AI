@@ -57,4 +57,13 @@ def chat(client: openai.OpenAI, model: str, temperature: float, frequency_penalt
         console.print("\n[bold yellow]Exiting...[/]")
         return
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
-        handle_openai_errors(e)
+        content = handle_openai_errors(e)
+        console.print(
+            Panel(
+                content,
+                title="[bold bright_red]API Error[/bold bright_red]",
+                title_align="left",
+                border_style="bright_red",
+            )
+        )
+        return

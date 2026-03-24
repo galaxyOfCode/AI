@@ -29,7 +29,7 @@ def extract_text_from_file(file_path: str) -> str:
     elif ext == ".pdf":
         try:
             reader = PdfReader(file_path)
-            return "".join([page.extract_text() for page in reader.pages])
+            return "".join(page.extract_text() or "" for page in reader.pages)
         except Exception as e:
             raise ValueError(f"Error reading PDF file: {e}") from e
     else:

@@ -40,6 +40,10 @@ def speech_to_text(client: openai.OpenAI, model: str, console: Console) -> None:
         content = handle_file_errors(e)
         console.print(f"Assistant: {content}", style=assistant_style)
 
+    except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
+        content = handle_openai_errors(e)
+        console.print(f"Assistant: {content}", style=assistant_style)
+
     except KeyboardInterrupt:
         console.print("\n[yellow]Exiting...[/]")
 

@@ -59,11 +59,11 @@ def main():
         elif choice == DATE_CALCULATOR:
             date_calculator(console)
         elif choice == DOC_REVIEW:
-            doc_review(client, config.better_model, console)
+            doc_review(client, config.doc_review_model, console)
         elif choice == IMG_GEN:
             generate_image(client, config.img_model, console)
         elif choice == IMG_DESC:
-            describe_image(config.api_key, config.vision_model,
+            describe_image(client, config.vision_model,
                            config.max_tokens, console)
         elif choice == SPEECH_TO_TEXT:
             speech_to_text(client, config.transcribe_model, console)
