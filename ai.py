@@ -2,17 +2,17 @@
 This is the main entry point for the AI application. It provides a menu-driven interface for users to interact with various AI functionalities, including chat, document review, image generation, and speech processing."""
 
 import sys
+
 from openai import OpenAI
 from rich.console import Console
 
 from chat import chat
-from reviewer import doc_review
 from config import Config
-from image import (describe_image, generate_image)
-from voice import text_to_speech, speech_to_text
-from utilities import (print_menu, not_numeric,
-                       list_models, list_settings,
-                       update, clear_screen, date_calculator)
+from image import describe_image, generate_image
+from reviewer import doc_review
+from utilities import (clear_screen, date_calculator, list_models,
+                       list_settings, not_numeric, print_menu, update)
+from voice import speech_to_text, text_to_speech
 
 FASTER_MODEL = 1
 BETTER_MODEL = 2

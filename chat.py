@@ -4,8 +4,8 @@ This module contains the chat function, which facilitates a conversation with Op
 import openai
 import pyperclip
 from rich.console import Console
-from rich.panel import Panel
 from rich.markdown import Markdown
+from rich.panel import Panel
 
 from errors import handle_openai_errors
 

@@ -3,15 +3,16 @@ This module provides the functionality for reviewing documents using OpenAI's AP
 """
 
 import os
+
 import openai
 import pyperclip
 from PyPDF2 import PdfReader
 from rich.console import Console
-from rich.prompt import Prompt
-from rich.panel import Panel
 from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.prompt import Prompt
 
-from errors import handle_openai_errors, handle_file_errors
+from errors import handle_file_errors, handle_openai_errors
 
 
 def extract_text_from_file(file_path: str) -> str:

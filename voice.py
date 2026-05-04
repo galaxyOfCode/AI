@@ -2,8 +2,9 @@
 This module provides functions for speech-to-text and text-to-speech functionalities using OpenAI's API. It includes error handling for file-related and OpenAI API errors, and uses the Rich library for terminal styling and user interaction. The speech-to-text function allows users to transcribe audio files, while the text-to-speech function converts user input text into an audio file saved on the user's desktop."""
 
 from pathlib import Path
-import pyperclip
+
 import openai
+import pyperclip
 from rich.console import Console
 from rich.prompt import Prompt
 

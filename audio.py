@@ -6,6 +6,7 @@ This module captures audio from the microphone, sends it to OpenAI's Realtime AP
 import asyncio
 import base64
 import json
+
 import numpy as np
 import pyaudio
 import websockets
@@ -55,7 +56,7 @@ async def audio_stream(config: Config, console: Console):
         loop = asyncio.get_running_loop()
         audio_queue = asyncio.Queue()
 
-        def mic_callback(input_data, frame_count, time_info, status_flags):
+        def mic_callback(input_data, _frame_count, _time_info, _status_flags):
             audio_array = np.frombuffer(input_data, dtype=np.int16).astype(np.float32)
 
             # Simple linear downsampling (44100 → 24000)

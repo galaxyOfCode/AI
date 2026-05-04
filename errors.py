@@ -3,7 +3,7 @@ This module contains functions for handling various types of errors.
 """
 
 import openai
-from requests.exceptions import HTTPError, Timeout, RequestException
+from requests.exceptions import HTTPError, RequestException, Timeout
 
 
 def handle_file_errors(exception: Exception) -> str:

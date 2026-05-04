@@ -6,6 +6,7 @@ import os
 import platform
 import subprocess
 from datetime import datetime, timedelta
+
 import openai
 from openai import OpenAIError
 from rich.console import Console

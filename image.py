@@ -2,15 +2,15 @@
 
 import base64
 from pathlib import Path
+
 import openai
 import pyperclip
 from rich.console import Console
-from rich.prompt import Prompt
 from rich.panel import Panel
+from rich.prompt import Prompt
 from rich.status import Status
 
-from errors import (handle_openai_errors,
-                    handle_file_errors)
+from errors import handle_file_errors, handle_openai_errors
 
 
 def generate_image(client: openai.OpenAI, model: str, console: Console) -> None:
