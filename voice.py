@@ -14,36 +14,38 @@ from errors import handle_file_errors, handle_openai_errors
 def speech_to_text(client: openai.OpenAI, model: str, console: Console) -> None:
     """ Transcribes a voice file to text using Rich for terminal styling. """
 
-    user_style = "bold bright_blue"
     assistant_style = "bold bright_red"
 
-    console.print("Select a File", style=user_style)
     choice = Prompt.ask("[bold bright_blue]Enter the path to your audio file[/bold bright_blue]")
 
     if not choice or not Path(choice).exists():
         console.print("[yellow]No valid file selected or file does not exist.\n[/yellow]")
+        console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
         return
 
     try:
-        with open(choice, "rb") as audio_file:
-            content = client.audio.transcriptions.create(
-                model=model,
-                file=audio_file,
-                response_format="text"
-            )
-            console.print("Assistant: ", style=assistant_style, end="")
-            console.print(content)
-            pyperclip.copy(content)
+        with console.status("[bold red]Assistant is thinking...[/bold red]", spinner="bouncingBar"):
+            with open(choice, "rb") as audio_file:
+                content = client.audio.transcriptions.create(
+                    model=model,
+                    file=audio_file,
+                    response_format="text"
+                )
+                console.print("Assistant: ", style=assistant_style, end="")
+                console.print(content)
+                pyperclip.copy(content)
 
-            console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
+                console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
 
     except (PermissionError, OSError, FileNotFoundError) as e:
         content = handle_file_errors(e)
         console.print(f"Assistant: {content}", style=assistant_style)
+        console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
 
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
         console.print(f"Assistant: {content}", style=assistant_style)
+        console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
 
     except KeyboardInterrupt:
         console.print("\n[yellow]Exiting...[/]")
@@ -79,6 +81,7 @@ def text_to_speech(client: openai.OpenAI, model: str, voice: str, console: Conso
     except (openai.APIConnectionError, openai.RateLimitError, openai.APIStatusError) as e:
         content = handle_openai_errors(e)
         console.print(f"Assistant: {content}", style=assistant_style)
+        console.input("\nPress [magenta]<Enter>[/magenta] to return to menu...")
 
     except KeyboardInterrupt:
         console.print("\n[yellow]Exiting...[/yellow]")
